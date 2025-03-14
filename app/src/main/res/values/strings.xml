@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Rock PixelPlay</string>
+    <string name="name">Pixel Play</string>
+    <string name="settings">settings</string>
+    <string name="search_cd">search</string>
+    <string name="image">image</string>
+</resources>
