@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#33000000">
+
+    <LinearLayout
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="20dp">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/back"
+            android:scaleType="center"
+            android:src="@drawable/ic_round_arrow_back_ios_new"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:singleLine="true"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:fontFamily="sans-serif"
+            android:paddingLeft="20dp"
+            android:text="Title "
+            android:textColor="#ffffff"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:translationY="2dp">
+
+        </TextView>
+
+        <ImageButton
+            android:id="@+id/caption"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/back"
+            android:scaleType="fitXY"
+            android:src="@drawable/mingcute_subtitle_fill"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/audio"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/back"
+            android:scaleType="fitXY"
+            android:src="@drawable/iconamoon_music_1_fill"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/options"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/back"
+            android:scaleType="fitXY"
+            android:src="@drawable/mi_options_vertical"
+            app:tint="#FFFFFF" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/play_pause_toggle_btn"
+        android:layout_width="78dp"
+        android:layout_height="78dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/circle"
+        android:contentDescription="@string/back"
+        android:padding="10dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_round_pause"
+        app:tint="#FFFFFF" />
+
+    <FrameLayout
+        android:id="@+id/progress_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="30dp">
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="bottom"
+            android:padding="7dp"
+            android:progress="10"
+            android:progressBackgroundTint="@color/secondary_50"
+            android:progressDrawable="@drawable/progress_track_back"
+            android:progressTint="@color/secondary_700" />
+
+        <TextView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="17dp"
+            android:text="00:01:10 / 01:10:00"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/end_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:padding="17dp"
+            android:text="End at 8:30 pm"
+            android:textColor="@color/white" />
+
+    </FrameLayout>
+
+</FrameLayout>
