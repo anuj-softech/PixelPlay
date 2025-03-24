@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <RelativeLayout
+        android:background="@color/white"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="1dp"
@@ -19,13 +20,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:fontFamily="@font/outfit"
             android:id="@+id/title"
             style="@style/MaterialAlertDialog.Material3.Title.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:fontFamily="@font/outfit"
             android:text="@string/name"
             android:textColor="@color/darkgreen" />
 
@@ -52,4 +53,39 @@
             android:src="@drawable/search"
             app:tint="@color/darkgreen" />
     </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_marginTop="60dp"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <include
+                android:id="@+id/recents"
+                layout="@layout/view_recent_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <include
+                android:id="@+id/added_list"
+                layout="@layout/view_new_added_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"/>
+
+            <include
+                android:id="@+id/storage_grid"
+                layout="@layout/view_storage_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

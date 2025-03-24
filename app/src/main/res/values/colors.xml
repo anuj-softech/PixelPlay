@@ -25,4 +25,6 @@
     <color name="secondary_900">#4f1ecd</color>
     <color name="darkgreen">#0B2F0B</color>
     <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 </resources>
