@@ -5,9 +5,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.rock.pixelplay.R
 import com.rock.pixelplay.databinding.ViewSmallVideoBinding
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.model.VideoItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SmallVideoAdapter(
     private val context: Context, private val videoList: List<VideoItem>
@@ -28,10 +33,22 @@ class SmallVideoAdapter(
         val videoItem = videoList[position]
         holder.binding.title.text = videoItem.title
         holder.binding.duration.text = videoItem.duration
-        val uri = videoItem.thumbnail.toUri()
-        holder.binding.thumbnail.setImageBitmap(videoUtils.getVideoThumbnail(uri.toString()))
+
+        // Show placeholder while loading
+        holder.binding.thumbnail.setImageResource(R.drawable.placeholder)
+
+        // Offload thumbnail loading to background thread
+        CoroutineScope(Dispatchers.IO).launch {
+            val thumbnail = videoUtils.getVideoThumbnail(videoItem.thumbnail.toUri().toString())
+
+            // Update the UI on the main thread
+            withContext(Dispatchers.Main) {
+                holder.binding.thumbnail.setImageBitmap(thumbnail)
+            }
+        }
+
         holder.binding.root.setOnClickListener {
-            videoUtils.playInApp(context,videoItem);
+            videoUtils.playInApp(context, videoItem)
         }
     }
 

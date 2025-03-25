@@ -1,22 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/recent_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        style="@style/MaterialAlertDialog.Material3.Title.Text"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Continue Watching"
-        android:layout_marginBottom="6dp"
-        android:textSize="16sp" />
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <TextView
+            style="@style/MaterialAlertDialog.Material3.Title.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Continue Watching"
+            android:layout_marginBottom="6dp"
+            android:textSize="16sp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/continue_rv"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            tools:listitem="@layout/view_large_video" />
+    </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/continue_rv"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        tools:listitem="@layout/view_large_video" />
-</LinearLayout>
+    <ImageButton
+        android:id="@+id/more_button"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="right|center_vertical"
+        android:background="@drawable/circle"
+        android:layout_marginRight="2dp"
+        android:contentDescription="@string/back"
+        android:scaleType="center"
+        android:src="@drawable/arrow_purple" />
+
+</FrameLayout>
