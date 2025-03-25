@@ -8,7 +8,6 @@
     tools:context=".MainActivity">
 
     <RelativeLayout
-        android:background="@color/white"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="1dp"
@@ -68,7 +67,8 @@
                 android:id="@+id/recents"
                 layout="@layout/view_recent_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"/>
 
             <include
                 android:id="@+id/added_list"

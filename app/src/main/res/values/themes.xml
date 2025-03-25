@@ -10,4 +10,8 @@
     </style>
 
     <style name="Theme.RockPixelPlay" parent="Base.Theme.RockPixelPlay" />
+    <style name="FullScreen" parent="Base.Theme.RockPixelPlay">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>
