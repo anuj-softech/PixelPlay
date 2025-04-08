@@ -1,6 +1,7 @@
 package com.rock.pixelplay
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -23,6 +24,7 @@ import com.rock.pixelplay.helper.HistoryHelper
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.model.VideoItem
 import com.rock.pixelplay.recyclerview.SpaceItemDecoration
+import com.rock.pixelplay.ui.SearchActivity
 
 class MainActivity : AppCompatActivity() {
     lateinit var lb: ActivityMainBinding;
@@ -38,6 +40,15 @@ class MainActivity : AppCompatActivity() {
         }
         checkPermissionsAndLoadVideos()
         setupNewAdded()
+        setupButtons()
+    }
+
+    private fun setupButtons() {
+        lb.searchBtn.setOnClickListener {
+            var intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
     }
 
     private fun checkPermissionsAndLoadVideos() {
