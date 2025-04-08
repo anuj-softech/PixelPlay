@@ -7,16 +7,83 @@
     android:layout_height="match_parent"
     tools:context=".ui.SearchActivity">
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <LinearLayout
+        android:id="@+id/search_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search"
-        app:startIconDrawable="@drawable/flu">
+        android:layout_alignParentEnd="true"
+        android:layout_margin="8dp"
+        android:background="@drawable/round_bg_100"
+        android:backgroundTint="@color/primary_50"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="2dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+        <ImageButton
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="false"
+            android:contentDescription="Search Icon"
+            android:focusable="false"
+            android:padding="8dp"
+            android:src="@drawable/fluent_search32filled" />
+
+        <EditText
+            android:id="@+id/search_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Search"
+            android:inputType="text"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="10dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="#8C8C8C" />
+
+        <ImageButton
+            android:id="@+id/mic_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Mic"
+            android:padding="8dp"
+            android:src="@drawable/mic" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp">
+
+        <FrameLayout
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:background="@drawable/back_search"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp">
+
+            <ImageView
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="60dp"
+                android:src="@drawable/fluent_search32filled"
+                app:tint="@color/darkgreen" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:paddingTop="30dp"
+                android:text="Search Across your entire device"/>
+        </FrameLayout>
+    </FrameLayout>
+
+
 </RelativeLayout>
