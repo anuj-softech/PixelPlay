@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         android:paddingRight="20dp">
 
-        <ImageButton
+        <com.rock.pixelplay.widgets.PopButton
             android:id="@+id/back"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -43,7 +43,7 @@
 
         </TextView>
 
-        <ImageButton
+        <com.rock.pixelplay.widgets.PopButton
             android:id="@+id/caption"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -55,7 +55,7 @@
             android:src="@drawable/mingcute_subtitle_fill"
             app:tint="#FFFFFF" />
 
-        <ImageButton
+        <com.rock.pixelplay.widgets.PopButton
             android:id="@+id/audio"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -67,7 +67,7 @@
             android:src="@drawable/iconamoon_music_1_fill"
             app:tint="#FFFFFF" />
 
-        <ImageButton
+        <com.rock.pixelplay.widgets.PopButton
             android:id="@+id/options"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -82,7 +82,7 @@
 
     </LinearLayout>
 
-    <ImageButton
+    <com.rock.pixelplay.widgets.PopButton
         android:id="@+id/play_pause_toggle_btn"
         android:layout_width="78dp"
         android:layout_height="78dp"
