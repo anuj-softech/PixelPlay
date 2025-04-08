@@ -24,7 +24,7 @@
             tools:listitem="@layout/view_large_video" />
     </LinearLayout>
 
-    <ImageButton
+    <com.rock.pixelplay.widgets.PopButton
         android:id="@+id/more_button"
         android:layout_width="28dp"
         android:layout_height="28dp"
