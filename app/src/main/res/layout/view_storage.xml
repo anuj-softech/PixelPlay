@@ -27,12 +27,14 @@
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:textSize="18sp"
+                android:id="@+id/title"
                 android:textStyle="bold"
                 android:textColor="#ffffff"
                 android:text="Internal Storage"
                 android:ellipsize="marquee"/>
             <TextView
                 android:layout_width="match_parent"
+                android:id="@+id/totalVideos"
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary_50"
                 android:text="126 Videos"/>

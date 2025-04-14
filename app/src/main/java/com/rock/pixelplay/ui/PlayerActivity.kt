@@ -2,6 +2,7 @@ package com.rock.pixelplay.ui;
 
 import android.R.attr.duration
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -69,6 +70,22 @@ class PlayerActivity : AppCompatActivity() {
             finish()
         }
         if (intent.hasExtra("video_item")) initWithVideoItem()
+        if (intent?.action == Intent.ACTION_VIEW && intent.data != null) {
+            val videoUri = intent.data!!
+            val videoItem = VideoItem(
+                title = videoUri.lastPathSegment ?: "Unknown",
+                path = videoUri.toString(),
+                dateAdded = System.currentTimeMillis(),
+                duration = VideoUtils().getVideoDuration(this, videoUri.toString()),
+                thumbnail = videoUri.toString(),
+                lastPlayed = "00:00:00",
+                playedPercentage = 0f
+            )
+            videoItemG = videoItem
+            lb.playerOverlay.title.text = videoItem.title
+            initPlayerFromPath(videoItem.path)
+            return
+        }
     }
 
     private fun initWithVideoItem() {

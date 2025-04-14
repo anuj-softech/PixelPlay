@@ -1,10 +1,13 @@
-package com.rock.pixelplay
+package com.rock.pixelplay.ui
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
@@ -17,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.rock.pixelplay.R
 import com.rock.pixelplay.adapter.LargeVideoAdapter
 import com.rock.pixelplay.adapter.SmallVideoAdapter
 import com.rock.pixelplay.databinding.ActivityMainBinding
@@ -24,7 +28,6 @@ import com.rock.pixelplay.helper.HistoryHelper
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.model.VideoItem
 import com.rock.pixelplay.recyclerview.SpaceItemDecoration
-import com.rock.pixelplay.ui.SearchActivity
 
 class MainActivity : AppCompatActivity() {
     lateinit var lb: ActivityMainBinding;
@@ -41,9 +44,78 @@ class MainActivity : AppCompatActivity() {
         checkPermissionsAndLoadVideos()
         setupNewAdded()
         setupButtons()
+        countAllVideos();
+        setupExternalStorage()
     }
 
+    private fun setupExternalStorage() {
+        val extStorageDirs = getExternalFilesDirs(null)
+        var externalPath: String? = null
+
+        val internalPath = Environment.getExternalStorageDirectory().absolutePath
+
+        for (file in extStorageDirs) {
+            if (
+                file != null &&
+                Environment.getExternalStorageState(file) == Environment.MEDIA_MOUNTED &&
+                !file.absolutePath.startsWith(internalPath)
+            ) {
+                externalPath = file.absolutePath.substringBefore("/Android")
+                break
+            }
+        }
+        val card = lb.storageGrid.externalStorage
+        card.title.text = "External Storage"
+
+        if (externalPath != null) {
+            val videoCount = countVideosInPath(externalPath)
+            card.totalVideos.text = "$videoCount Videos"
+            card.root.alpha = 1f
+            card.root.isClickable = true
+            card.root.setOnClickListener {
+                val i = Intent(this, BrowseActivity::class.java)
+                i.putExtra("path", externalPath)
+                startActivity(i)
+            }
+        } else {
+            card.totalVideos.text = "Not Connected"
+            card.root.alpha = 0.4f
+            card.root.isClickable = false
+        }
+    }
+
+
+    private fun countAllVideos() {
+        lb.storageGrid.internalBrowse.totalVideos.text = ""
+        val projection = arrayOf(MediaStore.Video.Media._ID)
+        val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val cursor = contentResolver.query(uri, projection, null, null, null)
+        val count = cursor?.count ?: 0
+        cursor?.close()
+        lb.storageGrid.internalBrowse.totalVideos.text = count.toString() + " Videos"
+    }
+    private fun countVideosInPath(path: String): Int {
+        val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(MediaStore.Video.Media._ID)
+        val selection = "${MediaStore.Video.Media.DATA} LIKE ?"
+        val selectionArgs = arrayOf("$path%")
+
+        val cursor = contentResolver.query(uri, projection, selection, selectionArgs, null)
+        val count = cursor?.count ?: 0
+        cursor?.close()
+        return count
+    }
+
+
     private fun setupButtons() {
+        lb.settingsBtn.setOnClickListener { v->
+            startActivity(Intent(this, SettingsActivity::class.java))
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
+        lb.storageGrid.internalBrowse.root.setOnClickListener { v->
+            startActivity(Intent(this, BrowseActivity::class.java))
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
         lb.searchBtn.setOnClickListener {
             var intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
@@ -52,28 +124,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissionsAndLoadVideos() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             when {
                 ContextCompat.checkSelfPermission(
-                    this, android.Manifest.permission.READ_MEDIA_VIDEO
+                    this, Manifest.permission.READ_MEDIA_VIDEO
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     setupNewAdded()
                 }
 
                 else -> {
-                    requestPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_VIDEO)
+                    requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_VIDEO)
                 }
             }
         } else {
             when {
                 ContextCompat.checkSelfPermission(
-                    this, android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    this, Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     setupNewAdded()
                 }
 
                 else -> {
-                    requestPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                 }
             }
         }
@@ -129,7 +201,7 @@ class MainActivity : AppCompatActivity() {
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (!recyclerView.canScrollHorizontally(-1)) {
-                    if (lb.recents.moreButton.visibility != View.VISIBLE) {
+                    if (lb.recents.moreButton.visibility !=- View.VISIBLE) {
                         lb.recents.moreButton.visibility = View.VISIBLE
                     }
                 } else {

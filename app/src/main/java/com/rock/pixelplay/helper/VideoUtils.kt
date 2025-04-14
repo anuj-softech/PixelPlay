@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.provider.MediaStore
 import com.rock.pixelplay.model.VideoItem
 import com.rock.pixelplay.ui.PlayerActivity
 import com.squareup.moshi.Moshi
@@ -67,4 +68,50 @@ class VideoUtils {
         HistoryHelper(context).addVideo(videoItem)
 
     }
+
+    public fun searchVideos(context: Context, query: String): List<VideoItem> {
+        val videos = mutableListOf<VideoItem>()
+        val projection = arrayOf(
+            MediaStore.Video.Media.TITLE,
+            MediaStore.Video.Media.DATA,
+            MediaStore.Video.Media.DATE_ADDED
+        )
+        val selection = "${MediaStore.Video.Media.TITLE} LIKE ?"
+        val selectionArgs = arrayOf("%$query%")
+        val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
+        val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+
+        context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+            ?.use { cursor ->
+                val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)
+                val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
+                val dateAddedColumn =
+                    cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
+
+                var count = 0
+                while (cursor.moveToNext() && count < 5) {
+                    val title = cursor.getString(titleColumn)
+                    val path = cursor.getString(pathColumn)
+                    val dateAdded = cursor.getLong(dateAddedColumn)
+                    val duration = getVideoDuration(context, path) // your util method
+                    val thumbnail = path
+
+                    videos.add(
+                        VideoItem(
+                            title = title,
+                            path = path,
+                            dateAdded = dateAdded,
+                            duration = duration,
+                            thumbnail = thumbnail,
+                            lastPlayed = "00:00:00",
+                            playedPercentage = 0f
+                        )
+                    )
+                    count++
+                }
+            }
+
+        return videos
+    }
+
 }
