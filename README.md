@@ -1,7 +1,7 @@
-# RockPixel Play
+# Rock PixelPlay
 ![image](https://github.com/user-attachments/assets/ff10431f-0bfe-40c6-8e7b-ed202d9ca64a)
 
-RockPixel Player is a free, open-source Android video player built on Media3 ExoPlayer. It supports almost all video formats, is lightweight, and offers a smooth playback experience while packing in powerful features.
+Rock PixelPlayer is a free, open-source Android video player built on Media3 ExoPlayer. It supports almost all video formats, is lightweight, and offers a smooth playback experience while packing in powerful features.
 
 ## Features
 - 🎬 **Wide Format Support:** Supports MKV, MP4, 3GP, WebM, AVI, MOV, FLV, MPEG, WMV, OGG, and more.
