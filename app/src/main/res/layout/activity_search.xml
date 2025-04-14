@@ -61,11 +61,12 @@
         android:layout_marginTop="70dp">
 
         <FrameLayout
+            android:id="@+id/search_placeholder"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:background="@drawable/back_search"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="50dp">
+            android:layout_marginTop="50dp"
+            android:background="@drawable/back_search">
 
             <ImageView
                 android:layout_width="84dp"
@@ -74,15 +75,29 @@
                 android:layout_marginBottom="60dp"
                 android:src="@drawable/fluent_search32filled"
                 app:tint="@color/darkgreen" />
+
             <TextView
+                android:id="@+id/search_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="30sp"
                 android:gravity="center"
                 android:paddingTop="30dp"
-                android:text="Search Across your entire device"/>
+                android:text="Search Across your entire device"
+                android:textSize="30sp" />
         </FrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_bg"
+            android:backgroundTint="@color/primary_50"
+            android:layout_margin="10dp"
+            tools:itemCount="3"
+            android:visibility="gone"
+            android:padding="10dp"
+            tools:listitem="@layout/view_list_video" />
     </FrameLayout>
 
 

@@ -26,19 +26,20 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:fontFamily="@font/outfit"
-            android:text="@string/name"
+            android:text="Settings"
             android:textColor="@color/darkgreen" />
 
         <com.rock.pixelplay.widgets.PopButton
             android:layout_width="28dp"
-            android:id="@+id/settings_btn"
+            android:id="@+id/back"
             android:layout_height="28dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
             android:background="@color/transparent"
-            android:contentDescription="@string/settings"
+            android:contentDescription="@string/back"
             android:scaleType="center"
-            android:src="@drawable/setting"
+            android:tint="@color/darkgreen"
+            android:src="@drawable/ic_round_arrow_back_ios_new"
             app:tint="@color/darkgreen" />
 
         <com.rock.pixelplay.widgets.PopButton
@@ -64,26 +65,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="15dp">
-
-            <include
-                android:id="@+id/recents"
-                layout="@layout/view_recent_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"/>
-
-            <include
-                android:id="@+id/added_list"
-                layout="@layout/view_new_added_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"/>
-
-            <include
-                android:id="@+id/storage_grid"
-                layout="@layout/view_storage_grid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
 
         </LinearLayout>

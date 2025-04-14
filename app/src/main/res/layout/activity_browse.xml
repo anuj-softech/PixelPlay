@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+    android:id="@+id/main"
+    android:orientation="vertical">
+
+    <!-- Header -->
 
     <RelativeLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginStart="1dp"
         android:layout_marginTop="1dp"
@@ -30,20 +32,20 @@
             android:textColor="@color/darkgreen" />
 
         <com.rock.pixelplay.widgets.PopButton
-            android:layout_width="28dp"
-            android:id="@+id/settings_btn"
-            android:layout_height="28dp"
+            android:id="@+id/back_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
             android:background="@color/transparent"
-            android:contentDescription="@string/settings"
             android:scaleType="center"
-            android:src="@drawable/setting"
+            android:src="@drawable/ic_round_arrow_back_ios_new"
+            android:tint="@color/darkgreen"
             app:tint="@color/darkgreen" />
 
         <com.rock.pixelplay.widgets.PopButton
-            android:layout_width="32dp"
             android:id="@+id/search_btn"
+            android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
@@ -55,39 +57,42 @@
             app:tint="@color/darkgreen" />
     </RelativeLayout>
 
-    <ScrollView
+    <!-- Path Bar -->
+
+    <!-- Folder List -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="60dp"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="15dp">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
-            <include
-                android:id="@+id/recents"
-                layout="@layout/view_recent_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"/>
+        <com.rock.pixelplay.widgets.PopButton
+            android:layout_width="42dp"
+            android:id="@+id/backpath"
+            android:layout_height="32dp"
+            android:background="@drawable/round_bg_10"
+            android:src="@drawable/backpath" />
 
-            <include
-                android:id="@+id/added_list"
-                layout="@layout/view_new_added_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:id="@+id/path_text"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/round_bg_10"
+            android:padding="6dp"
+            android:text="storage/0/emulated"
+            android:textColor="#004225" />
+    </LinearLayout>
 
-            <include
-                android:id="@+id/storage_grid"
-                layout="@layout/view_storage_grid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
-        </LinearLayout>
-    </ScrollView>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:background="@drawable/round_bg"
+        android:backgroundTint="@color/primary_50"
+        android:layout_marginHorizontal="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+</LinearLayout>
