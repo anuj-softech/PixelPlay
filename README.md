@@ -17,15 +17,27 @@ RockPixel Player is a free, open-source Android video player built on Media3 Exo
 - ✅ Custom Controller
 - ✅ Homescreen
 - ✅ Dark mode supported
-- ⏳ File Browser (In Progress)
+- ✅ File Browser
 - ⏳ Multiple Advanced Features (In Progress)
 
+
 ## Screenshots
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/741c8247-82c3-40d5-b26e-8a4228cc4e7d" width="30%" />
-  <img src="https://github.com/user-attachments/assets/4fab42cb-b622-419d-8780-0e560aa07b93" width="30%" />
-  <img src="https://github.com/user-attachments/assets/526bb606-d789-4145-8a04-ddeb5947b775" width="30%" />
-</p>
+
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/adc427cd-4eb5-476b-91a6-c2461375703a" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/3d54bd86-2438-43af-8b30-dcda350cd6c4" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/7be5313f-b2f8-41e0-9a85-af8f3318ee5a" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/2c4f8e52-bdb2-40c8-81c6-36f502543605" width="200"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/9c302dfb-907b-4f32-bc5a-c7808855d71d" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/d8b5d63a-27ec-4286-8633-76ec722e1fb0" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/b2f325eb-d8e0-4ea6-93f8-292a5990397e" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/e9ad2181-9618-4378-bd1c-65d07a519d6d" width="200"/></td>
+  </tr>
+</table>
+
 
 
 ## Installation
