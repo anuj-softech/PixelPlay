@@ -40,8 +40,7 @@
             android:background="@color/transparent"
             android:scaleType="center"
             android:src="@drawable/ic_round_arrow_back_ios_new"
-            android:tint="@color/darkgreen"
-            app:tint="@color/darkgreen" />
+            android:tint="@color/darkgreen" />
 
         <com.rock.pixelplay.widgets.PopButton
             android:id="@+id/search_btn"
@@ -54,7 +53,7 @@
             android:contentDescription="@string/search_cd"
             android:scaleType="center"
             android:src="@drawable/search"
-            app:tint="@color/darkgreen" />
+            android:tint="@color/darkgreen" />
     </RelativeLayout>
 
     <!-- Path Bar -->
@@ -70,20 +69,22 @@
         <com.rock.pixelplay.widgets.PopButton
             android:layout_width="42dp"
             android:id="@+id/backpath"
-            android:layout_height="32dp"
+            android:tint="@color/darkgreen"
+            android:layout_height="42dp"
             android:background="@drawable/round_bg_10"
             android:src="@drawable/backpath" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="42dp"
             android:id="@+id/path_text"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@drawable/round_bg_10"
             android:padding="6dp"
+            android:gravity="center_vertical"
             android:text="storage/0/emulated"
-            android:textColor="#004225" />
+            android:textColor="@color/darkgreen" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

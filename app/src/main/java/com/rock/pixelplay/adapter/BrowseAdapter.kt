@@ -4,10 +4,16 @@ import android.content.Context
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.rock.pixelplay.R
 import com.rock.pixelplay.databinding.ViewListFolderBinding
 import com.rock.pixelplay.databinding.ViewListVideoBinding
 import com.rock.pixelplay.helper.VideoUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class BrowseAdapter(
@@ -50,6 +56,7 @@ class BrowseAdapter(
         fun bind(file: File) {
             b.title.text = file.name
             b.count.text = "${countVideosInPath(file.path)} Items"
+
             b.root.setOnClickListener { onItemClick(file) }
         }
     }
@@ -59,7 +66,19 @@ class BrowseAdapter(
             b.title.text = file.name
             b.metadata.text = "${formatDuration(file)} ${file.length() / 1024 / 1024} Mb"
             b.root.setOnClickListener { onItemClick(file) }
+            b.thumbnail.setImageResource(R.drawable.placeholder)
+
+            // Offload thumbnail loading to background thread
+            CoroutineScope(Dispatchers.IO).launch {
+                val thumbnail = VideoUtils().getVideoThumbnail(file.path.toUri().toString())
+
+                // Update the UI on the main thread
+                withContext(Dispatchers.Main) {
+                    b.thumbnail.setImageBitmap(thumbnail)
+                }
+            }
         }
+
 
         private fun formatDuration(file: File): String {
             // placeholder: use media extractor if needed

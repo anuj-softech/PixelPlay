@@ -39,8 +39,7 @@
             android:contentDescription="@string/back"
             android:scaleType="center"
             android:tint="@color/darkgreen"
-            android:src="@drawable/ic_round_arrow_back_ios_new"
-            app:tint="@color/darkgreen" />
+            android:src="@drawable/ic_round_arrow_back_ios_new" />
 
         <com.rock.pixelplay.widgets.PopButton
             android:layout_width="32dp"
@@ -53,7 +52,7 @@
             android:contentDescription="@string/search_cd"
             android:scaleType="center"
             android:src="@drawable/search"
-            app:tint="@color/darkgreen" />
+            android:tint="@color/darkgreen" />
     </RelativeLayout>
 
     <ScrollView
