@@ -30,20 +30,20 @@
             android:textColor="@color/darkgreen" />
 
         <com.rock.pixelplay.widgets.PopButton
-            android:layout_width="28dp"
             android:id="@+id/back"
+            android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
             android:background="@color/transparent"
             android:contentDescription="@string/back"
             android:scaleType="center"
-            android:tint="@color/darkgreen"
-            android:src="@drawable/ic_round_arrow_back_ios_new" />
+            android:src="@drawable/ic_round_arrow_back_ios_new"
+            android:tint="@color/darkgreen" />
 
         <com.rock.pixelplay.widgets.PopButton
-            android:layout_width="32dp"
             android:id="@+id/search_btn"
+            android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
@@ -57,13 +57,109 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_marginTop="60dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="15dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Theme Setting -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/theme_setting"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Theme"
+                        android:src="@drawable/theme"
+                        app:tint="@color/darkgreen" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Theme"
+                            android:textColor="@color/darkgreen"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="System Default"
+                            android:id="@+id/theme_subtitle"
+                            android:textColor="@color/primary_800"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/black_and_white" />
+
+                <!-- Swipe Gestures Setting -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:id="@+id/swipe_gesture_setting"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Swipe Gestures"
+                        app:tint="@color/darkgreen"
+                        android:src="@drawable/swipe" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Swipe Gestures"
+                            android:textColor="@color/darkgreen"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Enabled"
+                            android:id="@+id/swipe_subtitle"
+                            android:textColor="@color/primary_800"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
 
 
         </LinearLayout>

@@ -18,6 +18,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/continue_rv"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="match_parent"
         tools:listitem="@layout/view_large_video" />
 </LinearLayout>
