@@ -19,15 +19,18 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.rock.pixelplay.R
 import com.rock.pixelplay.adapter.LargeVideoAdapter
-import com.rock.pixelplay.adapter.SmallVideoAdapter
+import com.rock.pixelplay.adapter.SearchAdapter
 import com.rock.pixelplay.databinding.ActivityMainBinding
 import com.rock.pixelplay.helper.HistoryHelper
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.model.VideoItem
 import com.rock.pixelplay.recyclerview.SpaceItemDecoration
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var lb: ActivityMainBinding;
@@ -55,10 +58,9 @@ class MainActivity : AppCompatActivity() {
         val internalPath = Environment.getExternalStorageDirectory().absolutePath
 
         for (file in extStorageDirs) {
-            if (
-                file != null &&
-                Environment.getExternalStorageState(file) == Environment.MEDIA_MOUNTED &&
-                !file.absolutePath.startsWith(internalPath)
+            if (file != null && Environment.getExternalStorageState(file) == Environment.MEDIA_MOUNTED && !file.absolutePath.startsWith(
+                    internalPath
+                )
             ) {
                 externalPath = file.absolutePath.substringBefore("/Android")
                 break
@@ -94,6 +96,7 @@ class MainActivity : AppCompatActivity() {
         cursor?.close()
         lb.storageGrid.internalBrowse.totalVideos.text = count.toString() + " Videos"
     }
+
     private fun countVideosInPath(path: String): Int {
         val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(MediaStore.Video.Media._ID)
@@ -108,11 +111,11 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setupButtons() {
-        lb.settingsBtn.setOnClickListener { v->
+        lb.settingsBtn.setOnClickListener { v ->
             startActivity(Intent(this, SettingsActivity::class.java))
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
-        lb.storageGrid.internalBrowse.root.setOnClickListener { v->
+        lb.storageGrid.internalBrowse.root.setOnClickListener { v ->
             startActivity(Intent(this, BrowseActivity::class.java))
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
@@ -162,14 +165,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNewAdded() {
         setupHistory()
-        val latestVideos = getLatestFiveVideos(this)
+        val latestVideos = getLatestVideos(this)
         latestVideos.forEach {
             println("Title: ${it.title}, Path: ${it.path}")
         }
         val linearLayoutManager = LinearLayoutManager(this)
-        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         lb.addedList.continueRv.layoutManager = linearLayoutManager
-        lb.addedList.continueRv.adapter = SmallVideoAdapter(this, latestVideos)
+        lb.addedList.continueRv.adapter = SearchAdapter(this, latestVideos)
         val spaceInPx = resources.getDimensionPixelSize(R.dimen.recycler_item_spacing)
         lb.addedList.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
     }
@@ -195,13 +198,19 @@ class MainActivity : AppCompatActivity() {
         lb.recents.continueRv.adapter = LargeVideoAdapter(this, history)
         val spaceInPx = resources.getDimensionPixelSize(R.dimen.recycler_item_spacing)
         lb.recents.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
+        val existingSnapHelper = lb.recents.continueRv.onFlingListener
+        if (existingSnapHelper != null) {
+            lb.recents.continueRv.onFlingListener = null
+        }
 
+        val snapHelper: SnapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(lb.recents.continueRv)
         lb.recents.continueRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (!recyclerView.canScrollHorizontally(-1)) {
-                    if (lb.recents.moreButton.visibility !=- View.VISIBLE) {
+                    if (lb.recents.moreButton.visibility != -View.VISIBLE) {
                         lb.recents.moreButton.visibility = View.VISIBLE
                     }
                 } else {
@@ -216,7 +225,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun getLatestFiveVideos(context: Context): List<VideoItem> {
+    private fun getLatestVideos(context: Context): List<VideoItem> {
         val videos = mutableListOf<VideoItem>()
         val contentResolver = context.contentResolver
         val videoUtils = VideoUtils()
@@ -251,7 +260,7 @@ class MainActivity : AppCompatActivity() {
             val dateAddedColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
 
             var count = 0
-            while (cursor.moveToNext() && count < 5) {
+            while (cursor.moveToNext() && count < 15) {
                 val title = cursor.getString(titleColumn)
                 val path = cursor.getString(pathColumn)
                 val dateAdded = cursor.getLong(dateAddedColumn)

@@ -10,12 +10,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.CheckedTextView
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isGone
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -105,7 +107,10 @@ class PlayerActivity : AppCompatActivity() {
         lb.playerView.player = player
         player.prepare()
         player.play()
+        val gestureManager = GestureManager(this,lb.playerView,player);
+        gestureManager.init();
         lb.playerView.setOnClickListener {
+            overlayShowing = !(lb.playerOverlay.root.isGone)
             showPlayerOverlay()
         }
         player.addListener(object : Player.Listener {
@@ -140,6 +145,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         initProgressBar();
         lb.playerOverlay.playPauseToggleBtn.setOnClickListener {
+            overlayShowing = !(lb.playerOverlay.root.isGone)
             if (player.isPlaying) {
                 player.pause()
             } else {
@@ -147,20 +153,25 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
         lb.playerOverlay.playPauseToggleBtn.visibility = View.VISIBLE
-        val gestureManager = GestureManager(this,lb.playerView);
-        gestureManager.init();
+
         when (state) {
             UI_PAUSED -> {
                 lb.playerOverlay.playPauseToggleBtn.setImageResource(R.drawable.iconoir_play_solid)
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 showPlayerOverlay()
+                if(Math.abs(player.duration - player.currentPosition) < 100){
+                    initPlayerUI(UI_ENDED)
+                }
             }
 
             UI_PLAYING -> {
                 lb.playerOverlay.playPauseToggleBtn.setImageResource(R.drawable.ic_round_pause)
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 hidePlayerOverlay()
             }
 
             UI_BUFFERING -> {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 lb.playerOverlay.playPauseToggleBtn.setImageResource(R.drawable.ic_round_pause)
             }
 

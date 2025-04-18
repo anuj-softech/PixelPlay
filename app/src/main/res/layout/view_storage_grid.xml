@@ -36,7 +36,6 @@
             android:layout_column="1"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_marginLeft="10dp"
             android:id="@+id/externalStorage"
             layout="@layout/view_storage" />
 
