@@ -29,4 +29,7 @@
     <color name="darkgreen">#E7FFEF</color>
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
+
+    <color name="listback">#07352C</color>
+    <color name="black_and_white">#FFFFFF</color>
 </resources>

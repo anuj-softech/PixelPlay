@@ -30,6 +30,7 @@
             android:contentDescription="Search Icon"
             android:focusable="false"
             android:padding="8dp"
+            android:tint="@color/darkgreen"
             android:src="@drawable/fluent_search32filled" />
 
         <EditText
@@ -42,7 +43,7 @@
             android:inputType="text"
             android:paddingHorizontal="12dp"
             android:paddingVertical="10dp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/darkgreen"
             android:textColorHint="#8C8C8C" />
 
         <ImageButton
@@ -52,6 +53,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Mic"
             android:padding="8dp"
+            android:tint="@color/darkgreen"
             android:src="@drawable/mic" />
     </LinearLayout>
 
@@ -66,11 +68,12 @@
             android:layout_height="300dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="50dp"
+            android:backgroundTint="@color/primary_100"
             android:background="@drawable/back_search">
 
             <ImageView
-                android:layout_width="84dp"
-                android:layout_height="84dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="60dp"
                 android:src="@drawable/fluent_search32filled"

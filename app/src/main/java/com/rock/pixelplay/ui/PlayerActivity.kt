@@ -30,6 +30,7 @@ import com.rock.pixelplay.helper.AnimationUtils
 import com.rock.pixelplay.helper.HistoryHelper
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.model.VideoItem
+import com.rock.pixelplay.player.GestureManager
 import com.squareup.moshi.Moshi
 
 class PlayerActivity : AppCompatActivity() {
@@ -146,6 +147,8 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
         lb.playerOverlay.playPauseToggleBtn.visibility = View.VISIBLE
+        val gestureManager = GestureManager(this,lb.playerView);
+        gestureManager.init();
         when (state) {
             UI_PAUSED -> {
                 lb.playerOverlay.playPauseToggleBtn.setImageResource(R.drawable.iconoir_play_solid)

@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:elevation="0dp"
+        app:cardBackgroundColor="@color/listback"
         android:layout_marginVertical="4dp"
         app:cardCornerRadius="10dp">
 
@@ -40,7 +41,7 @@
                     android:maxLines="2"
                     android:textStyle="bold"
                     android:text="My.Testing.Video.S01E08.WEB.x264.1080p.mkv"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black_and_white" />
 
                 <TextView
                     android:id="@+id/metadata"
