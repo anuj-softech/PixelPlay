@@ -33,7 +33,7 @@ Rock PixelPlayer is a free, open-source Android video player built on Media3 Exo
     <td><img src="https://github.com/user-attachments/assets/2c4f8e52-bdb2-40c8-81c6-36f502543605" width="200"/></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/9c302dfb-907b-4f32-bc5a-c7808855d71d" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/4444f8b3-5dfe-4822-8242-9a8ba6428e25" width="200"/></td>
     <td><img src="https://github.com/user-attachments/assets/d8b5d63a-27ec-4286-8633-76ec722e1fb0" width="200"/></td>
     <td><img src="https://github.com/user-attachments/assets/b2f325eb-d8e0-4ea6-93f8-292a5990397e" width="200"/></td>
     <td><img src="https://github.com/user-attachments/assets/e9ad2181-9618-4378-bd1c-65d07a519d6d" width="200"/></td>
