@@ -7,8 +7,9 @@ data class VideoItem(
     val title: String,
     val path: String,
     val dateAdded: Long,
-    val duration: String,
+    var duration: String,
     val thumbnail: String,
     var lastPlayed: String,
-    var playedPercentage : Float
+    var playedPercentage : Float,
+    var lastPlayedMs: Long = 0
 )

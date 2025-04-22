@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.rock.pixelplay.R
 import com.rock.pixelplay.databinding.ViewLargeVideoBinding
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.model.VideoItem
@@ -31,7 +33,6 @@ class LargeVideoAdapter(
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-
         val videoItem = videoList[position]
         holder.binding.title.text = videoItem.title
         holder.binding.duration.text = "${videoItem.lastPlayed} / ${videoItem.duration}"
@@ -40,6 +41,7 @@ class LargeVideoAdapter(
             val thumbnailBitmap = videoUtils.getVideoThumbnail(videoItem.thumbnail)
             withContext(Dispatchers.Main) {
                 holder.binding.thumbnail.setImageBitmap(thumbnailBitmap)
+                Glide.with(context).load(thumbnailBitmap).placeholder(R.drawable.placeholder).into(holder.binding.thumbnail)
             }
         }
 

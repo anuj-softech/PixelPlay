@@ -1,14 +1,11 @@
 package com.rock.pixelplay.ui
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -26,14 +23,16 @@ import com.rock.pixelplay.R
 import com.rock.pixelplay.adapter.LargeVideoAdapter
 import com.rock.pixelplay.adapter.SearchAdapter
 import com.rock.pixelplay.databinding.ActivityMainBinding
+import com.rock.pixelplay.helper.BrowseUtils
 import com.rock.pixelplay.helper.HistoryHelper
-import com.rock.pixelplay.helper.VideoUtils
-import com.rock.pixelplay.model.VideoItem
+import com.rock.pixelplay.helper.onResultInterface
 import com.rock.pixelplay.recyclerview.SpaceItemDecoration
 
 
 class MainActivity : AppCompatActivity() {
+
     lateinit var lb: ActivityMainBinding;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,6 +48,17 @@ class MainActivity : AppCompatActivity() {
         setupButtons()
         countAllVideos();
         setupExternalStorage()
+        val spaceInPx = resources.getDimensionPixelSize(R.dimen.recycler_item_spacing)
+        lb.recents.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
+    }
+
+    private fun countAllVideos() {
+        lb.storageGrid.internalBrowse.totalVideos.text = ""
+        BrowseUtils(this).countAllVideos(object : onResultInterface{
+            override fun onValue(count: Int) {
+                lb.storageGrid.internalBrowse.totalVideos.text = count.toString() + " Videos"
+            }
+        })
     }
 
     private fun setupExternalStorage() {
@@ -70,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         card.title.text = "External Storage"
 
         if (externalPath != null) {
-            val videoCount = countVideosInPath(externalPath)
+            val videoCount = BrowseUtils(this).countVideosInPath(externalPath)
             card.totalVideos.text = "$videoCount Videos"
             card.root.alpha = 1f
             card.root.isClickable = true
@@ -85,30 +95,6 @@ class MainActivity : AppCompatActivity() {
             card.root.isClickable = false
         }
     }
-
-
-    private fun countAllVideos() {
-        lb.storageGrid.internalBrowse.totalVideos.text = ""
-        val projection = arrayOf(MediaStore.Video.Media._ID)
-        val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-        val cursor = contentResolver.query(uri, projection, null, null, null)
-        val count = cursor?.count ?: 0
-        cursor?.close()
-        lb.storageGrid.internalBrowse.totalVideos.text = count.toString() + " Videos"
-    }
-
-    private fun countVideosInPath(path: String): Int {
-        val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(MediaStore.Video.Media._ID)
-        val selection = "${MediaStore.Video.Media.DATA} LIKE ?"
-        val selectionArgs = arrayOf("$path%")
-
-        val cursor = contentResolver.query(uri, projection, selection, selectionArgs, null)
-        val count = cursor?.count ?: 0
-        cursor?.close()
-        return count
-    }
-
 
     private fun setupButtons() {
         lb.settingsBtn.setOnClickListener { v ->
@@ -165,7 +151,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNewAdded() {
         setupHistory()
-        val latestVideos = getLatestVideos(this)
+        val latestVideos = BrowseUtils(this).getLatestVideos(this)
         latestVideos.forEach {
             println("Title: ${it.title}, Path: ${it.path}")
         }
@@ -178,7 +164,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        lb.main.postDelayed({ setupHistory() }, 100)
+        lb.main.postDelayed({ setupHistory() }, 1000)
         super.onResume()
     }
 
@@ -196,13 +182,11 @@ class MainActivity : AppCompatActivity() {
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         lb.recents.continueRv.layoutManager = linearLayoutManager
         lb.recents.continueRv.adapter = LargeVideoAdapter(this, history)
-        val spaceInPx = resources.getDimensionPixelSize(R.dimen.recycler_item_spacing)
-        lb.recents.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
         val existingSnapHelper = lb.recents.continueRv.onFlingListener
         if (existingSnapHelper != null) {
             lb.recents.continueRv.onFlingListener = null
         }
-
+        lb.recents.continueRv.setHasFixedSize(true)
         val snapHelper: SnapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(lb.recents.continueRv)
         lb.recents.continueRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -223,67 +207,5 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
-
-    private fun getLatestVideos(context: Context): List<VideoItem> {
-        val videos = mutableListOf<VideoItem>()
-        val contentResolver = context.contentResolver
-        val videoUtils = VideoUtils()
-        val uri: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(
-            MediaStore.Video.Media.TITLE,
-            MediaStore.Video.Media.DATA,
-            MediaStore.Video.Media.DATE_ADDED,
-            MediaStore.Video.Media.MIME_TYPE
-        )
-
-        val selection = "${MediaStore.Video.Media.MIME_TYPE} IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        val selectionArgs = arrayOf(
-            "video/x-matroska",  // MKV
-            "video/webm",         // WebM
-            "video/mp4",          // MP4
-            "video/3gpp",         // 3GP
-            "video/avi",          // AVI (may need custom support)
-            "video/quicktime",    // MOV
-            "video/x-flv",        // FLV
-            "video/mpeg",         // MPEG
-            "video/x-ms-wmv",     // WMV
-            "video/x-msvideo",    // AVI
-            "video/ogg"           // OGG
-        )
-
-        val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
-
-        contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
-            val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)
-            val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
-            val dateAddedColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
-
-            var count = 0
-            while (cursor.moveToNext() && count < 15) {
-                val title = cursor.getString(titleColumn)
-                val path = cursor.getString(pathColumn)
-                val dateAdded = cursor.getLong(dateAddedColumn)
-                val duration = videoUtils.getVideoDuration(context, path)
-                val thumbnail = path
-                videos.add(
-                    VideoItem(
-                        title,
-                        path,
-                        dateAdded,
-                        duration,
-                        thumbnail,
-                        lastPlayed = "00:00:00",
-                        playedPercentage = 0F
-                    )
-                )
-                count++
-            }
-        }
-
-        return videos
-
-    }
-
 
 }

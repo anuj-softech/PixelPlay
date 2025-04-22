@@ -15,6 +15,7 @@ import androidx.media3.ui.PlayerView;
 import com.rock.pixelplay.R;
 import com.rock.pixelplay.helper.Popup;
 import com.rock.pixelplay.helper.SettingsPref;
+import com.rock.pixelplay.helper.VideoUtils;
 
 public class GestureManager {
     private final PlayerView playerView;
@@ -53,8 +54,10 @@ public class GestureManager {
                 float x = e.getX();
                 if (x < playerView.getWidth() / 2f) {
                     player.seekTo(Math.max(0, player.getCurrentPosition() - 10000));
+                    popup.showPopup(playerView,R.drawable.back10,"-10s");
                 } else {
                     player.seekTo(player.getCurrentPosition() + 10000);
+                    popup.showPopup(playerView,R.drawable.next10,"-10s");
                 }
                 return true;
             }
@@ -62,6 +65,7 @@ public class GestureManager {
             @Override
             public void onLongPress(MotionEvent e) {
                 player.setPlaybackSpeed(2f);
+                popup.showPopup(playerView,R.drawable.fastforward,"2x");
             }
 
             @Override
@@ -112,7 +116,7 @@ public class GestureManager {
                     } else if(horizontalSwipeEnabled){
                         factor = (float) (dx * 10) / playerView.getWidth();
                         long duration = setDurationBySwipe(factor);
-                        popup.showPopup(playerView,R.drawable.move_x, getDurationInString(duration) + "");
+                        popup.showPopup(playerView,R.drawable.move_x, (new VideoUtils()).getDurationInString(duration) + "");
 
                     }
 
@@ -145,7 +149,7 @@ public class GestureManager {
     }
 
     private float setBrightnessBySwipe(float factor) {
-        float newBrightness = Math.max(0.01f, Math.min(1.0f, currentBrightness + 0.1f * factor));
+        float newBrightness = Math.max(0.01f, Math.min(1.0f, currentBrightness + 0.5f * factor));
         Log.d("Brightness", "New brightness: " + newBrightness +" "+factor);
         layout.screenBrightness = newBrightness;
         activity.getWindow().setAttributes(layout);
@@ -157,12 +161,5 @@ public class GestureManager {
 
         return newDuration;
     }
-    @SuppressLint("DefaultLocale")
-    private String getDurationInString(long duration) {
-        long seconds = duration / 1000;
-        long hours = seconds / 3600;
-        long minutes = (seconds % 3600) / 60;
-        long secs = seconds % 60;
-        return String.format("%02d:%02d:%02d", hours, minutes, secs);
-    }
+
 }
