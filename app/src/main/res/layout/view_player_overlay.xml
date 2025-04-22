@@ -108,7 +108,7 @@
             android:layout_gravity="bottom"
             android:max="500"
             android:padding="7dp"
-            android:progress="10"
+            android:progress="0"
             android:progressBackgroundTint="@color/secondary_50"
             android:progressDrawable="@drawable/progress_track_back"
             android:progressTint="@color/secondary_700" />
@@ -118,7 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="17dp"
-            android:text="00:01:10 / 01:10:00"
+            android:text="Loading"
             android:textColor="@color/white" />
 
         <TextView
@@ -127,7 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:padding="17dp"
-            android:text="End at 8:30 pm"
+            android:text=""
             android:textColor="@color/white" />
 
     </FrameLayout>

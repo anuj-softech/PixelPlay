@@ -54,4 +54,7 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer-dash:1.6.0")
     implementation("androidx.media3:media3-ui:1.6.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
+    implementation("androidx.media3:media3-exoplayer-hls:1.6.1")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 }

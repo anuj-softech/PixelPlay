@@ -1,5 +1,6 @@
 package com.rock.pixelplay.helper
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -43,6 +44,17 @@ class VideoUtils {
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
+    fun durationToMillis(durationStr: String): Long {
+        val parts = durationStr.split(":").map { it.toLongOrNull() ?: 0L }
+        val (hours, minutes, seconds) = when (parts.size) {
+            3 -> Triple(parts[0], parts[1], parts[2])
+            2 -> Triple(0L, parts[0], parts[1])
+            1 -> Triple(0L, 0L, parts[0])
+            else -> Triple(0L, 0L, 0L)
+        }
+        return (hours * 3600 + minutes * 60 + seconds) * 1000
+    }
+
 
     fun getVideoThumbnail(videoPath: String): Bitmap? {
         val retriever = MediaMetadataRetriever()
@@ -112,6 +124,15 @@ class VideoUtils {
             }
 
         return videos
+    }
+
+    @SuppressLint("DefaultLocale")
+    public fun getDurationInString(duration: Long): String {
+        val seconds = duration / 1000
+        val hours = seconds / 3600
+        val minutes = (seconds % 3600) / 60
+        val secs = seconds % 60
+        return String.format("%02d:%02d:%02d", hours, minutes, secs)
     }
 
 }
