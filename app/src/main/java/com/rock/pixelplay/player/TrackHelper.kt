@@ -1,27 +1,38 @@
 package com.rock.pixelplay.player
 
 import android.content.Context
+import android.graphics.PixelFormat
+import android.view.Gravity
 import android.view.LayoutInflater
-import android.widget.Button
+import android.view.WindowManager
 import androidx.media3.common.C
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rock.pixelplay.R
 import com.rock.pixelplay.adapter.TrackAdapter
 import com.rock.pixelplay.ui.PlayerActivity
+import com.rock.pixelplay.widgets.PopButton
 
 fun PlayerActivity.showCaptionSelectorDialog(context: Context, player: ExoPlayer) {
-    val dialogView =
-        LayoutInflater.from(context).inflate(R.layout.dialog_caption_selector, null)
-    val recyclerView = dialogView.findViewById<RecyclerView>(R.id.captionRecyclerView)
-    val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+    val dialogView = LayoutInflater.from(context)
+        .inflate(R.layout.dialog_caption_selector, null)
 
-    val dialog = MaterialAlertDialogBuilder(
-        context
-    ).setView(dialogView).create()
+    val recyclerView = dialogView.findViewById<RecyclerView>(R.id.captionRecyclerView)
+    val closeButton = dialogView.findViewById<PopButton>(R.id.closeButton)
+
+    val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+    val layoutParams = WindowManager.LayoutParams(
+        WindowManager.LayoutParams.MATCH_PARENT,
+        WindowManager.LayoutParams.WRAP_CONTENT,
+        WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,  // Use this type for a floating view
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        PixelFormat.TRANSLUCENT
+    )
+    layoutParams.gravity = Gravity.BOTTOM
+    windowManager.addView(dialogView, layoutParams)
 
     val tracks = mutableListOf<Pair<String, TrackSelectionOverride?>>()
 
@@ -52,36 +63,46 @@ fun PlayerActivity.showCaptionSelectorDialog(context: Context, player: ExoPlayer
             params.addOverride(override)
         }
         player.trackSelectionParameters = params.build()
-        dialog.dismiss()
+        windowManager.removeView(dialogView)
     }
 
-    closeButton.setOnClickListener { dialog.dismiss() }
-    dialog.show()
+    closeButton.setOnClickListener { windowManager.removeView(dialogView) }
+    closeButton.setOnClickListener {
+        windowManager.removeView(dialogView)
+    }
+
 }
 
 fun PlayerActivity.showAudioSelectorDialog(context: Context, player: ExoPlayer) {
-    val dialogView =
-        LayoutInflater.from(context).inflate(R.layout.dialog_caption_selector, null)
-    val recyclerView = dialogView.findViewById<RecyclerView>(R.id.captionRecyclerView)
-    val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+    val dialogView = LayoutInflater.from(context)
+        .inflate(R.layout.dialog_caption_selector, null)
 
-    val dialog = MaterialAlertDialogBuilder(
-        context
-    ).setView(dialogView).create()
+    val recyclerView = dialogView.findViewById<RecyclerView>(R.id.captionRecyclerView)
+    val closeButton = dialogView.findViewById<PopButton>(R.id.closeButton)
+
+    val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+    val layoutParams = WindowManager.LayoutParams(
+        WindowManager.LayoutParams.MATCH_PARENT,
+        WindowManager.LayoutParams.WRAP_CONTENT,
+        WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,  // Use this type for a floating view
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        PixelFormat.TRANSLUCENT
+    )
+    layoutParams.gravity = Gravity.BOTTOM
+    windowManager.addView(dialogView, layoutParams)
 
     val tracks = mutableListOf<Pair<String, TrackSelectionOverride?>>()
-
     tracks.add("No Audio" to null)
 
-    var selectedIndex: Int = 0
-
+    var selectedIndex = 0
     val trackGroups = player.currentTracks.groups
     trackGroups.forEach { group ->
         if (group.type == C.TRACK_TYPE_AUDIO) {
             for (i in 0 until group.length) {
                 val trackName = group.getTrackFormat(i).language ?: "Unknown"
                 if (group.isTrackSelected(i)) {
-                    selectedIndex = i + 1 // +1 to account for "No Audio" at index 0
+                    selectedIndex = i + 1
                 }
                 tracks.add(trackName to TrackSelectionOverride(group.mediaTrackGroup, i))
             }
@@ -98,11 +119,13 @@ fun PlayerActivity.showAudioSelectorDialog(context: Context, player: ExoPlayer) 
             params.addOverride(override)
         }
         player.trackSelectionParameters = params.build()
-        dialog.dismiss()
+
+        windowManager.removeView(dialogView)
+    }
+    closeButton.setOnClickListener {
+        windowManager.removeView(dialogView)
     }
 
-    closeButton.setOnClickListener { dialog.dismiss() }
-    dialog.show()
 }
 
 fun PlayerActivity.setupTrackButton() {

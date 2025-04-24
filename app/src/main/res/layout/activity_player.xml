@@ -16,6 +16,6 @@
         app:surface_type="texture_view"
         app:use_artwork="false"
         app:use_controller="false" />
-
-    <include layout="@layout/view_player_overlay" android:id="@+id/player_overlay"/>
+    <include layout="@layout/view_player_overlay"
+        android:id="@+id/player_overlay"/>
   </FrameLayout>

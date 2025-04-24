@@ -5,59 +5,47 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/player_setting_bg"
     tools:context=".ui.MainActivity">
 
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
+        android:translationZ="10dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/title"
-            style="@style/MaterialAlertDialog.Material3.Title.Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:fontFamily="@font/outfit"
-            android:text="Settings"
-            android:textColor="@color/darkgreen" />
-
         <com.rock.pixelplay.widgets.PopButton
-            android:id="@+id/back"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:id="@+id/close_dialog"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
+            android:layout_marginEnd="15dp"
             android:background="@color/transparent"
-            android:contentDescription="@string/back"
+            android:contentDescription="@string/close"
             android:scaleType="center"
-            android:src="@drawable/ic_round_arrow_back_ios_new"
-            android:tint="@color/darkgreen" />
+            android:src="@drawable/cross"
+            android:tint="@color/white" />
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="vertical">
 
                 <!-- Theme Setting -->
                 <LinearLayout
@@ -72,8 +60,8 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:contentDescription="Theme"
-                        android:src="@drawable/theme"
-                        app:tint="@color/darkgreen" />
+                        android:src="@drawable/speed"
+                        app:tint="@color/white" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -85,18 +73,40 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Theme"
-                            android:textColor="@color/darkgreen"
+                            android:text="Speed"
+                            android:textColor="@color/white"
                             android:textSize="16sp"
                             android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="System Default"
-                            android:id="@+id/theme_subtitle"
-                            android:textColor="@color/primary_800"
-                            android:textSize="14sp" />
+                            android:layout_gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="1.0x"
+                                android:gravity="center"
+                                android:paddingRight="10dp"
+                                android:id="@+id/speedtxt"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+                            <com.google.android.material.slider.Slider
+                                android:id="@+id/speedSlider"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:valueFrom="0.25"
+                                android:valueTo="4"
+                                android:stepSize="0.05"
+                                app:thumbColor="@color/primary_500"
+                                app:trackColorActive="@color/primary_500"
+                                app:trackColorInactive="@color/secondary_100"
+                                android:value="1"
+
+                                app:tickVisible="true">
+                            </com.google.android.material.slider.Slider>
+                        </LinearLayout>
+
                     </LinearLayout>
                 </LinearLayout>
 
@@ -104,7 +114,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/black_and_white" />
+                    android:background="#9B9B9B" />
 
                 <!-- Swipe Gestures Setting -->
                 <LinearLayout
@@ -118,32 +128,31 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:contentDescription="Swipe Gestures"
-                        app:tint="@color/darkgreen"
-                        android:src="@drawable/swipe" />
+                        android:contentDescription="Night Mode"
+                        app:tint="@color/white"
+                        android:src="@drawable/night" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Swipe Gestures"
-                            android:textColor="@color/darkgreen"
+                            android:text="Night Mode"
+                            android:textColor="@color/white"
                             android:textSize="16sp"
                             android:textStyle="bold" />
-
-                        <TextView
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/night_mode_switch"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Enabled"
-                            android:id="@+id/swipe_subtitle"
-                            android:textColor="@color/primary_800"
-                            android:textSize="14sp" />
+                            app:thumbTint="@color/primary_500"
+                            app:trackTint="@color/secondary_100"
+                            android:layout_height="wrap_content"/>
+
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
