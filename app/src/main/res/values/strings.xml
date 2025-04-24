@@ -5,4 +5,5 @@
     <string name="search_cd">search</string>
     <string name="image">image</string>
     <string name="back">back\n</string>
+    <string name="close">close</string>
 </resources>

@@ -7,10 +7,13 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.media3.common.MediaItem
@@ -33,6 +36,7 @@ import com.rock.pixelplay.player.UI_IDLE
 import com.rock.pixelplay.player.UI_PAUSED
 import com.rock.pixelplay.player.UI_PLAYING
 import com.rock.pixelplay.player.hidePlayerOverlay
+import com.rock.pixelplay.player.initOptions
 import com.rock.pixelplay.player.initProgressBar
 import com.rock.pixelplay.player.manageState
 import com.rock.pixelplay.player.setupTrackButton
@@ -43,6 +47,7 @@ import java.util.Date
 
 class PlayerActivity : AppCompatActivity() {
 
+    public var dimView: View? = null
     lateinit var lb: ActivityPlayerBinding
     lateinit var player: ExoPlayer
     lateinit var updateHandler: Handler
@@ -69,6 +74,13 @@ class PlayerActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
         updateHandler = Handler(mainLooper)
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R){
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.insetsController?.apply {
+                hide(WindowInsets.Type.navigationBars())
+                systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        }
         initPlayerUI(UI_IDLE)
         initPlayerInstance()
         lb.playerOverlay.back.setOnClickListener {
@@ -175,6 +187,7 @@ class PlayerActivity : AppCompatActivity() {
             hidePlayerOverlay()
         }
         initProgressBar();
+        initOptions();
         lb.playerOverlay.playPauseToggleBtn.setOnClickListener {
             overlayShowing = !(lb.playerOverlay.root.isGone)
             if (player.isPlaying) {
@@ -188,6 +201,7 @@ class PlayerActivity : AppCompatActivity() {
         manageState(state)
 
     }
+
 
     //TODO set spinner options
 
