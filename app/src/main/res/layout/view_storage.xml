@@ -38,7 +38,7 @@
                 android:id="@+id/totalVideos"
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary_50"
-                android:text="126 Videos"/>
+                android:text="indexing..."/>
         </LinearLayout>
 
     </LinearLayout>

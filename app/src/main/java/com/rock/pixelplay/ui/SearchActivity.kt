@@ -53,7 +53,9 @@ class SearchActivity : AppCompatActivity() {
         }
 
         addSearchLogic();
-
+        lb.back.setOnClickListener {
+            finish()
+        }
 
     }
 

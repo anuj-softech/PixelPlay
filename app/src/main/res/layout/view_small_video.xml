@@ -15,7 +15,7 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/image"
             android:scaleType="centerCrop"
-            android:src="@drawable/thumb1" />
+            android:src="@drawable/placeholder" />
 
         <View
             android:layout_width="match_parent"
@@ -38,14 +38,14 @@
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
             android:maxLines="2"
-            android:text="My.Testing.Video.S01E08.WEB.x264.1080p.mkv"
+            android:text=""
             android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="01:15:00"
+            android:text=""
             android:textColor="#7C7C7C"
             android:textSize="10sp" />
     </LinearLayout>
