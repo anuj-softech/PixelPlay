@@ -109,9 +109,10 @@
             android:max="500"
             android:padding="7dp"
             android:progress="0"
-            android:progressBackgroundTint="@color/secondary_50"
+            android:thumbTint="#0F8A6A"
+            android:progressBackgroundTint="#E3F4F1"
             android:progressDrawable="@drawable/progress_track_back"
-            android:progressTint="@color/secondary_700" />
+            android:progressTint="#149E7D" />
 
         <TextView
             android:id="@+id/duration"

@@ -3,6 +3,7 @@ package com.rock.pixelplay.ui
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +35,8 @@ class BrowseActivity : AppCompatActivity() {
             startActivity(Intent(this, SearchActivity::class.java))
         }
         lb.backpath.setOnClickListener {
+            showFolders();
+         /*
             if (lb.pathText.text.toString()
                     .equals(Environment.getExternalStorageDirectory().absolutePath)
             ) {
@@ -42,9 +45,57 @@ class BrowseActivity : AppCompatActivity() {
                 val path = lb.pathText.text.toString()
                 val rPath = path.substring(0, path.lastIndexOf("/"))
                 showFiles(rPath)
+            }*/
+        }
+        showFolders();
+    }
+
+    private fun showFolders() {
+        val path = intent.getStringExtra("path") ?: Environment.getExternalStorageDirectory().absolutePath
+        if (path == null) return
+        lb.pathText.setText(path)
+        var dir = File(path)
+        val folders = mutableSetOf<File>()
+
+        val projection = arrayOf(MediaStore.Video.Media.DATA)
+        val selection = "${MediaStore.Video.Media.DATA} LIKE ?"
+        val selectionArgs = arrayOf("$path%")
+        val sortOrder = null
+
+        val cursor = contentResolver.query(
+            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            sortOrder
+        )
+
+        cursor?.use {
+            val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
+            while (cursor.moveToNext()) {
+                val filePath = cursor.getString(dataIndex)
+                val parent = File(filePath).parentFile
+                if (parent != null && parent.exists()) {
+                    if(parent.path != dir.path)
+                    folders.add(parent)
+                }
             }
         }
-        showFiles("");
+
+        val folderList = folders.toList().sortedBy { it.name.lowercase() }
+        if(folderList.size == 0){
+            Toast.makeText(this, "No folders or videos found", Toast.LENGTH_SHORT).show()
+        }
+        val videos = mutableListOf<File>();
+        var files = dir.listFiles();
+        files?.forEach {
+            if (it.extension in listOf("mp4", "mkv", "avi")) videos.add(it)
+        }
+        lb.recyclerView.layoutManager = LinearLayoutManager(this)
+        lb.recyclerView.adapter = BrowseAdapter(this, folderList, videos) { file ->
+            onItemClick(file)
+        }
+
     }
 
     private fun showFiles(rPath: String) {
@@ -69,7 +120,7 @@ class BrowseActivity : AppCompatActivity() {
         folders.sortBy { it.name.lowercase() }
         videos.sortBy { it.name.lowercase() }
         lb.recyclerView.layoutManager = LinearLayoutManager(this)
-        lb.recyclerView.adapter = BrowseAdapter(this,folders, videos) { file ->
+        lb.recyclerView.adapter = BrowseAdapter(this, folders, videos) { file ->
             onItemClick(file)
         }
     }

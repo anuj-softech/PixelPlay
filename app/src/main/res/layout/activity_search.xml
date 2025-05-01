@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.SearchActivity">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/MaterialAlertDialog.Material3.Title.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/outfit"
+            android:text="Search"
+            android:textColor="@color/darkgreen" />
+
+        <com.rock.pixelplay.widgets.PopButton
+            android:id="@+id/back"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/back"
+            android:scaleType="center"
+            android:src="@drawable/ic_round_arrow_back_ios_new"
+            android:tint="@color/darkgreen" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/search_box"
@@ -22,7 +56,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="12dp">
 
-        <ImageButton
+        <com.rock.pixelplay.widgets.PopButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -30,8 +64,8 @@
             android:contentDescription="Search Icon"
             android:focusable="false"
             android:padding="8dp"
-            android:tint="@color/darkgreen"
-            android:src="@drawable/fluent_search32filled" />
+            android:src="@drawable/fluent_search32filled"
+            android:tint="@color/darkgreen" />
 
         <EditText
             android:id="@+id/search_input"
@@ -39,28 +73,27 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:hint="Search"
+            android:hint="type name of video"
             android:inputType="text"
             android:paddingHorizontal="12dp"
             android:paddingVertical="10dp"
             android:textColor="@color/darkgreen"
             android:textColorHint="#8C8C8C" />
 
-        <ImageButton
+        <com.rock.pixelplay.widgets.PopButton
             android:id="@+id/mic_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Mic"
             android:padding="8dp"
-            android:tint="@color/darkgreen"
-            android:src="@drawable/mic" />
+            android:src="@drawable/mic"
+            android:tint="@color/darkgreen" />
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="70dp">
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/search_placeholder"
@@ -68,8 +101,8 @@
             android:layout_height="300dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="50dp"
-            android:backgroundTint="@color/primary_100"
-            android:background="@drawable/back_search">
+            android:background="@drawable/back_search"
+            android:backgroundTint="@color/primary_100">
 
             <ImageView
                 android:layout_width="72dp"
@@ -94,14 +127,14 @@
             android:id="@+id/search_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="10dp"
             android:background="@drawable/round_bg"
             android:backgroundTint="@color/primary_50"
-            android:layout_margin="10dp"
-            tools:itemCount="3"
-            android:visibility="gone"
             android:padding="10dp"
+            android:visibility="gone"
+            tools:itemCount="3"
             tools:listitem="@layout/view_list_video" />
     </FrameLayout>
 
 
-</RelativeLayout>
+</LinearLayout>

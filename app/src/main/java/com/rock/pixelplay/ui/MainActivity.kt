@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -50,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         setupExternalStorage()
         val spaceInPx = resources.getDimensionPixelSize(R.dimen.recycler_item_spacing)
         lb.recents.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
+        lb.addedList.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
     }
 
     private fun countAllVideos() {
@@ -144,6 +144,9 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 setupNewAdded()
+                setupButtons()
+                countAllVideos();
+                setupExternalStorage()
             } else {
                 Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show()
             }
@@ -159,9 +162,10 @@ class MainActivity : AppCompatActivity() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         lb.addedList.continueRv.layoutManager = linearLayoutManager
         lb.addedList.continueRv.adapter = SearchAdapter(this, latestVideos)
-        val spaceInPx = resources.getDimensionPixelSize(R.dimen.recycler_item_spacing)
-        lb.addedList.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
+
     }
+
+    private var lastHistoryHash: Int? = null
 
     override fun onResume() {
         lb.main.postDelayed({ setupHistory() }, 1000)
@@ -169,43 +173,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupHistory() {
-        val historyHelper = HistoryHelper(this);
+        val historyHelper = HistoryHelper(this)
         val history = historyHelper.getHistory()
+
+        val currentHash = history.hashCode()
+        if (currentHash == lastHistoryHash) return // No change
+
+        lastHistoryHash = currentHash
+
         if (history.isEmpty()) {
             lb.recents.root.visibility = View.GONE
             return
         }
+
+        lb.recents.root.visibility = View.VISIBLE
+
         val linearLayoutManager = LinearLayoutManager(this).apply {
             orientation = LinearLayoutManager.HORIZONTAL
             initialPrefetchItemCount = 3
         }
-        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+
         lb.recents.continueRv.layoutManager = linearLayoutManager
         lb.recents.continueRv.adapter = LargeVideoAdapter(this, history)
+
         val existingSnapHelper = lb.recents.continueRv.onFlingListener
         if (existingSnapHelper != null) {
             lb.recents.continueRv.onFlingListener = null
         }
+
         lb.recents.continueRv.setHasFixedSize(true)
         val snapHelper: SnapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(lb.recents.continueRv)
+
         lb.recents.continueRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-
-                if (!recyclerView.canScrollHorizontally(-1)) {
-                    if (lb.recents.moreButton.visibility != -View.VISIBLE) {
-                        lb.recents.moreButton.visibility = View.VISIBLE
-                    }
-                } else {
-                    if (lb.recents.moreButton.isVisible) {
-
-                        lb.recents.moreButton.visibility = View.GONE
-
-                    }
-                }
+                lb.recents.moreButton.visibility =
+                    if (!recyclerView.canScrollHorizontally(-1)) View.VISIBLE else View.GONE
             }
         })
     }
+
 
 }
