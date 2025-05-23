@@ -11,6 +11,7 @@ Rock PixelPlayer is a free, open-source Android video player built on Media3 Exo
 - 🔍 **Intuitive File Browser:** Navigate through your device's storage to pick videos effortlessly.
 - 🔊 **Gesture Controls:** Swipe gestures to control volume, brightness, and seek.
 - ⏩ **Playback Speed Control:** Adjust playback speed to suit your needs.
+- ▶️ Play directly from other apps.
 
 ## Current Progress
 - ✅ Video Playback
@@ -18,7 +19,8 @@ Rock PixelPlayer is a free, open-source Android video player built on Media3 Exo
 - ✅ Homescreen
 - ✅ Dark mode supported
 - ✅ File Browser
-- ✅ Smooth Swipe Gestures
+- ⏳ Network Streaming (In Progress)
+- ⏳ Widewine and Clearkey DRM content playback (In Progress)
 - ⏳ Multiple Advanced Features (In Progress)
 
 
