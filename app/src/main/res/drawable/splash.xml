@@ -4,6 +4,7 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/foreground" />
+            android:antialias="true"
+            android:src="@drawable/image_3" />
     </item>
 </layer-list>
