@@ -6,10 +6,13 @@
         <item name="colorAccent">#8d41f4</item>
         <item name="fontFamily">@font/outfit</item>
         <item name="colorSecondary">#8d41f4</item>
-        <item name="android:windowBackground">#FFFFFF</item>
+        <item name="android:windowBackground">@null</item>
     </style>
 
     <style name="Theme.RockPixelPlay" parent="Base.Theme.RockPixelPlay" />
+    <style name="Theme.RockPixelPlay.splash" parent="Base.Theme.RockPixelPlay" >
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
     <style name="FullScreen" parent="Base.Theme.RockPixelPlay">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>

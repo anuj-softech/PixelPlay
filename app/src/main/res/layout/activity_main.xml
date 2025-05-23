@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mainscreen"
     tools:context=".ui.MainActivity">
 
     <RelativeLayout
@@ -59,8 +60,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="60dp"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="15dp"
+        android:paddingRight="5dp"
+        android:paddingLeft="15dp"
         android:clipToPadding="false">
 
         <include

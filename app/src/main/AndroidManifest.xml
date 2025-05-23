@@ -55,6 +55,7 @@
         </activity>
         <activity
             android:name=".ui.MainActivity"
+            android:theme="@style/Theme.RockPixelPlay.splash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
