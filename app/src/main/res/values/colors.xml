@@ -2,6 +2,7 @@
 <resources>
     <!-- Primary Colors -->
     <color name="primary_50">#e0f3ef</color>
+    <color name="mainscreen">#ffffff</color>
     <color name="primary_100">#b4e2d6</color>
     <color name="primary_200">#84cfbb</color>
     <color name="primary_300">#53bca1</color>

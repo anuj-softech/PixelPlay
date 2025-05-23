@@ -3,6 +3,7 @@
     <!-- Primary Colors -->
     <!-- Primary Colors (Dark Mode) -->
     <color name="primary_50">#001A12</color>
+    <color name="mainscreen">#00160B</color>
     <color name="primary_100">#037053</color>
     <color name="primary_200">#0b8061</color>
     <color name="primary_300">#109070</color>

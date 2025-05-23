@@ -45,6 +45,10 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
         checkPermissionsAndLoadVideos()
         setupNewAdded()
         setupButtons()
@@ -58,11 +62,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun countAllVideos() {
         lb.storageGrid.internalBrowse.totalVideos.text = ""
-        BrowseUtils(this).countAllVideos(object : onResultInterface{
-            override fun onValue(count: Int) {
-                lb.storageGrid.internalBrowse.totalVideos.text = count.toString() + " Videos"
-            }
-        })
+        Thread({
+            BrowseUtils(this).countAllVideos(object : onResultInterface {
+                override fun onValue(count: Int) {
+                    runOnUiThread {
+                        lb.storageGrid.internalBrowse.totalVideos.text =
+                            count.toString() + " Videos"
+                    }
+                }
+            })
+        }).start()
+
     }
 
     private fun setupExternalStorage() {
