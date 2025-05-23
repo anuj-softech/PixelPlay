@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -26,6 +27,8 @@ import com.rock.pixelplay.helper.BrowseUtils
 import com.rock.pixelplay.helper.HistoryHelper
 import com.rock.pixelplay.helper.onResultInterface
 import com.rock.pixelplay.recyclerview.SpaceItemDecoration
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         val spaceInPx = resources.getDimensionPixelSize(R.dimen.recycler_item_spacing)
         lb.recents.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
         lb.addedList.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
+        logNewAppCount()
     }
 
     private fun countAllVideos() {
@@ -214,5 +218,19 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    fun logNewAppCount() {
+        Thread {
+            try {
+                val url = URL("https://pixelplay-analytics.main-rock-inc.workers.dev/app")
+                val resp = (url.openConnection() as HttpURLConnection).run {
+                    requestMethod = "GET"
+                    inputStream.bufferedReader().readText()
+                }
+                Log.d("Analytics", "New app count: ${resp}")
+            } catch (e: Exception) {
+                Log.e("Analytics", "Error fetching app count", e)
+            }
+        }.start()
+    }
 
 }

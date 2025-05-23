@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rock.pixelplay.R
 import com.rock.pixelplay.databinding.ViewListFolderBinding
 import com.rock.pixelplay.databinding.ViewListVideoBinding
+import com.rock.pixelplay.helper.DiskBitmapCache
 import com.rock.pixelplay.helper.VideoUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -69,14 +70,20 @@ class BrowseAdapter(
             b.thumbnail.setImageResource(R.drawable.placeholder)
 
             // Offload thumbnail loading to background thread
-            CoroutineScope(Dispatchers.IO).launch {
-                val thumbnail = VideoUtils().getVideoThumbnail(file.path.toUri().toString())
-
-                // Update the UI on the main thread
-                withContext(Dispatchers.Main) {
-                    b.thumbnail.setImageBitmap(thumbnail)
+            val uri = file.path.toUri().toString()
+            val cached = DiskBitmapCache.get(uri)
+            if (cached != null) {
+                b.thumbnail.setImageBitmap(cached)
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val thumb = VideoUtils().getVideoThumbnail(uri)
+                    DiskBitmapCache.put(uri, thumb)
+                    withContext(Dispatchers.Main) {
+                        b.thumbnail.setImageBitmap(thumb)
+                    }
                 }
             }
+
         }
 
 

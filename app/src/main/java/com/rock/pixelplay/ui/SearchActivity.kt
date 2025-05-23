@@ -39,19 +39,6 @@ class SearchActivity : AppCompatActivity() {
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         lb.searchInput.requestFocus()
         inputMethodManager.showSoftInput(lb.searchInput, InputMethodManager.SHOW_IMPLICIT)
-        lb.searchBox.post {
-            val parentWidth = (lb.searchBox.parent as View).width
-
-            val animator = ValueAnimator.ofInt(0, parentWidth)
-            animator.duration = 300
-            animator.addUpdateListener {
-                val value = it.animatedValue as Int
-                lb.searchBox.layoutParams.width = value
-                lb.searchBox.requestLayout()
-            }
-            animator.start()
-        }
-
         addSearchLogic();
         lb.back.setOnClickListener {
             finish()

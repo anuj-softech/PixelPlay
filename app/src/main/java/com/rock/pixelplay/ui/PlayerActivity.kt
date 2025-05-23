@@ -59,7 +59,7 @@ class PlayerActivity : AppCompatActivity() {
     var hideOverlayRunnable: Runnable? = Runnable {
         hidePlayerOverlay()
     }
-    lateinit var loader : Loader
+    lateinit var loader: Loader
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +74,7 @@ class PlayerActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
         updateHandler = Handler(mainLooper)
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
             window.insetsController?.apply {
                 hide(WindowInsets.Type.navigationBars())
@@ -87,9 +87,27 @@ class PlayerActivity : AppCompatActivity() {
             finish()
         }
         if (intent.hasExtra("video_item")) initWithVideoItem()
+
         if (intent?.action == Intent.ACTION_VIEW && intent.data != null) {
             val rawUri = intent.data!!
             val isLocal = rawUri.scheme == "file" || rawUri.scheme == "content"
+            if (rawUri.scheme == "content") {
+                Log.e("Content", rawUri.toString())
+                applicationContext.grantUriPermission(
+                    packageName,
+                    rawUri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+                try {
+                    contentResolver.takePersistableUriPermission(
+                        rawUri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (e: SecurityException) {
+                    Log.e("VideoPlayer", "Failed to persist URI permission: $e")
+                }
+
+            }
             val actualUri = if (rawUri.scheme == "pixelplay") {
                 rawUri.toString().replace("pixelplay://", "https://").toUri()
             } else rawUri
@@ -115,6 +133,7 @@ class PlayerActivity : AppCompatActivity() {
             initPlayerFromPath(videoItem.path)
             return
         }
+
     }
 
     private fun initWithVideoItem() {
@@ -152,7 +171,7 @@ class PlayerActivity : AppCompatActivity() {
 
         val gestureManager = GestureManager(this, lb.playerView, player);
         gestureManager.init();
-        lb.playerView.setOnClickListener{
+        lb.playerView.setOnClickListener {
             overlayShowing = !(lb.playerOverlay.root.isGone)
             showPlayerOverlay()
         }
@@ -174,7 +193,7 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
         })
-        updateRunnable = Runnable{
+        updateRunnable = Runnable {
             updateInfo();
             updateHandler.postDelayed(updateRunnable, 1000);
         }

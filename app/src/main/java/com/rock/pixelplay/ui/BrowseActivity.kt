@@ -1,10 +1,12 @@
 package com.rock.pixelplay.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -19,6 +21,8 @@ import java.io.File
 
 class BrowseActivity : AppCompatActivity() {
     private lateinit var lb: ActivityBrowseBinding
+
+    var isAtHome = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +54,9 @@ class BrowseActivity : AppCompatActivity() {
         showFolders();
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun showFolders() {
+        isAtHome = true
         val path = intent.getStringExtra("path") ?: Environment.getExternalStorageDirectory().absolutePath
         if (path == null) return
         lb.pathText.setText(path)
@@ -99,14 +105,13 @@ class BrowseActivity : AppCompatActivity() {
     }
 
     private fun showFiles(rPath: String) {
-        var path =
-            intent.getStringExtra("path") ?: Environment.getExternalStorageDirectory().absolutePath
+        var path = rPath
         lb.pathText.setText(path)
         if (rPath.isNotEmpty()) {
             path = rPath;
             lb.pathText.setText(path)
         }
-
+        isAtHome = false;
         val dir = File(path)
         val files = dir.listFiles()
 
@@ -120,9 +125,16 @@ class BrowseActivity : AppCompatActivity() {
         folders.sortBy { it.name.lowercase() }
         videos.sortBy { it.name.lowercase() }
         lb.recyclerView.layoutManager = LinearLayoutManager(this)
-        lb.recyclerView.adapter = BrowseAdapter(this, folders, videos) { file ->
+        lb.recyclerView.adapter = BrowseAdapter(this, emptyList(), videos) { file ->
             onItemClick(file)
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (isAtHome) finish()
+                else showFolders()
+            }
+        })
     }
 
     fun onItemClick(file: File) {
