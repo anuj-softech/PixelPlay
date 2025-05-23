@@ -4,10 +4,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#33000000">
+    android:background="#52000000">
 
     <LinearLayout
         android:id="@+id/title_bar"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:gravity="center_vertical"
@@ -98,6 +99,7 @@
         android:id="@+id/progress_container"
         android:layout_width="match_parent"
         android:layout_height="64dp"
+        android:paddingHorizontal="10dp"
         android:layout_gravity="bottom"
         android:layout_marginBottom="60dp">
 

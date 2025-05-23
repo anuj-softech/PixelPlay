@@ -156,9 +156,12 @@ public class GestureManager {
         return newBrightness;
     }
     private long setDurationBySwipe(float factor) {
-        newDuration = (long) Math.max(0, Math.min(player.getDuration(), currentDuration + player.getDuration() * factor/10));
+        float change = player.getDuration() * factor/10;
+        if(change > 20000){
+            change =  100*1000* factor/10;
+        }
+        newDuration = (long) Math.max(0, Math.min(player.getDuration(), currentDuration + change));
         Log.d("Duration", "New Duration: " + newDuration +" "+factor);
-
         return newDuration;
     }
 

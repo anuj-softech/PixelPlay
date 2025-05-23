@@ -5,10 +5,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.rock.pixelplay.R
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rock.pixelplay.databinding.ViewLargeVideoBinding
+import com.rock.pixelplay.helper.DiskBitmapCache
+import com.rock.pixelplay.helper.HistoryHelper
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.model.VideoItem
 import kotlinx.coroutines.CoroutineScope
@@ -37,16 +39,37 @@ class LargeVideoAdapter(
         holder.binding.title.text = videoItem.title
         holder.binding.duration.text = "${videoItem.lastPlayed} / ${videoItem.duration}"
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val thumbnailBitmap = videoUtils.getVideoThumbnail(videoItem.thumbnail)
-            withContext(Dispatchers.Main) {
-                holder.binding.thumbnail.setImageBitmap(thumbnailBitmap)
-                Glide.with(context).load(thumbnailBitmap).placeholder(R.drawable.placeholder).into(holder.binding.thumbnail)
+        val uri = videoItem.thumbnail.toUri().toString()
+        val cached = DiskBitmapCache.get(uri)
+        if (cached != null) {
+            holder.binding.thumbnail.setImageBitmap(cached)
+        } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                val thumb = videoUtils.getVideoThumbnail(uri)
+                DiskBitmapCache.put(uri, thumb)
+                withContext(Dispatchers.Main) {
+                    holder.binding.thumbnail.setImageBitmap(thumb)
+                }
             }
         }
 
+
         holder.binding.root.setOnClickListener {
             videoUtils.playInApp(context, videoItem)
+        }
+        holder.binding.root.setOnLongClickListener {
+            val dialogBuilder = MaterialAlertDialogBuilder(context);
+            dialogBuilder.setTitle("Delete Video");
+            dialogBuilder.setMessage("Are you sure you want to delete this video?");
+            dialogBuilder.setPositiveButton("Yes") { dialog, which ->
+                HistoryHelper(context).removeVideoByPath(videoItem)
+            }
+            dialogBuilder.setNegativeButton("No") { dialog, which ->
+                dialog.dismiss()
+            }
+            val dialog = dialogBuilder.create()
+            dialog.show()
+            true
         }
         holder.binding.continueBtn.setOnClickListener {
             videoUtils.playInApp(context, videoItem)

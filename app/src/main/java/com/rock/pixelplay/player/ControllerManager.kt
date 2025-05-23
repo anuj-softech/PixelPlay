@@ -12,7 +12,9 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.widget.SeekBar
+import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.toColorInt
+import com.rock.pixelplay.R
 import com.rock.pixelplay.helper.AnimationUtils
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.ui.PlayerActivity
@@ -109,9 +111,7 @@ public fun PlayerActivity.initOptions() {
             }
 
             override fun onClose() {
-                val slideOut: Animation? = android.view.animation.AnimationUtils.loadAnimation(lb.root.context, com.rock.pixelplay.R.anim.slide_out_right)
-                dialogView.getLB().main.startAnimation(slideOut)
-                dialogView.getLB().main.postDelayed({windowManager.removeView(dialogView)},290)
+                closeDialog(dialogView, windowManager)
 
             }
         })
@@ -120,9 +120,32 @@ public fun PlayerActivity.initOptions() {
                 player?.setPlaybackSpeed(progress)
             }
         })
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (dialogView.isShown) {
+                    val slideOut: Animation? = android.view.animation.AnimationUtils.loadAnimation(lb.root.context, com.rock.pixelplay.R.anim.slide_out_right)
+                    dialogView.getLB().main.startAnimation(slideOut)
+                    dialogView.getLB().main.postDelayed({ windowManager.removeView(dialogView) }, 290)
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
     }
 
 
+}
+
+private fun PlayerActivity.closeDialog(
+    dialogView: PlayerSettings,
+    windowManager: WindowManager
+) {
+    val slideOut: Animation? =
+        android.view.animation.AnimationUtils.loadAnimation(lb.root.context, R.anim.slide_out_right)
+    dialogView.getLB().main.startAnimation(slideOut)
+    dialogView.getLB().main.postDelayed({ windowManager.removeView(dialogView) }, 290)
 }
 
 fun PlayerActivity.applyNightOverlay(enable: Boolean) {

@@ -7,6 +7,7 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.rock.pixelplay.R
 import com.rock.pixelplay.databinding.ViewSmallVideoBinding
+import com.rock.pixelplay.helper.DiskBitmapCache
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.model.VideoItem
 import kotlinx.coroutines.CoroutineScope
@@ -35,18 +36,26 @@ class SmallVideoAdapter(
         holder.binding.duration.text = videoItem.duration
 
         // Show placeholder while loading
-        holder.binding.thumbnail.setImageResource(R.drawable.placeholder)
+        val imageView = holder.binding.thumbnail
+        val uri = videoItem.thumbnail.toUri().toString()
 
-        // Offload thumbnail loading to background thread
-        CoroutineScope(Dispatchers.IO).launch {
-            val thumbnail = videoUtils.getVideoThumbnail(videoItem.thumbnail.toUri().toString())
+        imageView.setImageResource(R.drawable.placeholder)
+        imageView.tag = uri  // Use thumbnail URI for precise tagging
 
-            // Update the UI on the main thread
-            withContext(Dispatchers.Main) {
-                holder.binding.thumbnail.setImageBitmap(thumbnail)
+        val cached = DiskBitmapCache.get(uri)
+        if (cached != null) {
+            if (imageView.tag == uri)
+                imageView.setImageBitmap(cached)
+        } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                val thumb = videoUtils.getVideoThumbnail(uri)
+                DiskBitmapCache.put(uri, thumb)
+                withContext(Dispatchers.Main) {
+                    if (imageView.tag == uri)
+                        imageView.setImageBitmap(thumb)
+                }
             }
         }
-
         holder.binding.root.setOnClickListener {
             videoUtils.playInApp(context, videoItem)
         }

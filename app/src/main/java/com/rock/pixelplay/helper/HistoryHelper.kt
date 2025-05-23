@@ -26,8 +26,8 @@ class HistoryHelper(context: Context) {
     }
 
     // Remove a video by path and save
-    fun removeVideoByPath(path: String) {
-        videoHistory.removeAll { it.path == path }
+    fun removeVideoByPath(video: VideoItem) {
+        videoHistory.removeAll { it.path == video.path }
         saveHistory()
     }
 
