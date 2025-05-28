@@ -6,7 +6,6 @@
         <item name="colorAccent">#8d41f4</item>
         <item name="fontFamily">@font/outfit</item>
         <item name="colorSecondary">#8d41f4</item>
-        <item name="android:windowBackground">@null</item>
     </style>
 
     <style name="Theme.RockPixelPlay" parent="Base.Theme.RockPixelPlay" />

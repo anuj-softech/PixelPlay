@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -37,9 +38,11 @@ class SearchActivity : AppCompatActivity() {
         }
         val inputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        lb.searchInput.requestFocus()
-        inputMethodManager.showSoftInput(lb.searchInput, InputMethodManager.SHOW_IMPLICIT)
-        addSearchLogic();
+        lb.searchBox.post{
+            lb.searchInput.requestFocus()
+            inputMethodManager.showSoftInput(lb.searchInput, InputMethodManager.SHOW_FORCED)
+            addSearchLogic();
+        }
         lb.back.setOnClickListener {
             finish()
         }
@@ -51,6 +54,7 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                 val query = lb.searchInput.text.toString().trim()
+                Log.d("Searching" , "query : $query");
                 if (query.isNotEmpty()) {
                     val loader : Loader = Loader(this,R.drawable.baseline_loop_24);
                     loader.startLoading();

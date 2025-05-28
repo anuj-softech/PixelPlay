@@ -75,6 +75,7 @@
             android:background="@android:color/transparent"
             android:hint="type name of video"
             android:inputType="text"
+            android:imeOptions="actionSearch"
             android:paddingHorizontal="12dp"
             android:paddingVertical="10dp"
             android:textColor="@color/darkgreen"

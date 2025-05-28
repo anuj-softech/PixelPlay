@@ -26,7 +26,10 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        lb.back.setOnClickListener { finish() }
+        lb.back.setOnClickListener {
+            finish()
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
 
         val themeLabels = arrayOf("System Default", "Light", "Dark")
         val swipeLabels = arrayOf("Enabled", "Disabled")
