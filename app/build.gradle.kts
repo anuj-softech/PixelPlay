@@ -1,17 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.rock.pixelplay"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.rock.pixelplay"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -50,11 +50,26 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
-    implementation("androidx.media3:media3-exoplayer:1.6.0")
-    implementation("androidx.media3:media3-exoplayer-dash:1.6.0")
-    implementation("androidx.media3:media3-ui:1.6.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
-    implementation("androidx.media3:media3-exoplayer-hls:1.6.1")
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    kapt("com.github.bumptech.glide:compiler:4.16.0")
+    ksp("com.github.bumptech.glide:compiler:4.16.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
+
+    implementation(files("libs/media3-decode-ffmpeg-1.9.1.aar"))
+    implementation(files("libs/media3-decode-av1-1.9.1.aar"))
+    implementation(files("libs/media3-decode-flac-1.9.1.aar"))
+    implementation(files("libs/media3-decode-iamf-1.9.1.aar"))
+    implementation(files("libs/media3-decode-opus-1.9.1.aar"))
+    implementation(files("libs/media3-decode-vp9-1.9.1.aar"))
+    implementation("androidx.media3:media3-exoplayer:1.9.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.9.1")
+    implementation("androidx.media3:media3-ui:1.9.1")
+    implementation("androidx.media3:media3-exoplayer-hls:1.9.1")
+    implementation("androidx.media3:media3-common:1.9.1")
+    implementation("androidx.media3:media3-decoder:1.9.1")
+    implementation("androidx.media3:media3-effect:1.9.1")
+    implementation("androidx.media3:media3-common-ktx:1.9.1")
+    implementation("androidx.media3:media3-transformer:1.9.1")
+
+
+
 }

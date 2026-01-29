@@ -2,6 +2,7 @@ package com.rock.pixelplay.ui;
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -21,6 +22,8 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import com.rock.pixelplay.R
@@ -71,21 +74,18 @@ class PlayerActivity : AppCompatActivity() {
             insets
         });
         loader = Loader(this, R.drawable.lucide_loader)
-        window.decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        setupFullScreen()
         updateHandler = Handler(mainLooper)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-            window.insetsController?.apply {
-                hide(WindowInsets.Type.navigationBars())
-                systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
-        }
         initPlayerUI(UI_IDLE)
         initPlayerInstance()
         lb.playerOverlay.back.setOnClickListener {
             finish()
         }
+        loadFromIntent()
+
+    }
+
+    private fun loadFromIntent() {
         if (intent.hasExtra("video_item")) initWithVideoItem()
 
         if (intent?.action == Intent.ACTION_VIEW && intent.data != null) {
@@ -133,7 +133,19 @@ class PlayerActivity : AppCompatActivity() {
             initPlayerFromPath(videoItem.path)
             return
         }
+    }
 
+    private fun setupFullScreen() {
+        window.decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.insetsController?.apply {
+                hide(WindowInsets.Type.navigationBars())
+                systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        }
     }
 
     private fun initWithVideoItem() {
@@ -142,8 +154,8 @@ class PlayerActivity : AppCompatActivity() {
         val adapter = moshi.adapter(VideoItem::class.java)
         val videoItem = adapter.fromJson(json)
         videoItemG = videoItem!!
-        lb.playerOverlay.title.text = videoItem?.title
-        initPlayerFromPath(videoItem?.path)
+        lb.playerOverlay.title.text = videoItem.title
+        initPlayerFromPath(videoItem.path)
     }
 
     @OptIn(UnstableApi::class)
@@ -200,7 +212,7 @@ class PlayerActivity : AppCompatActivity() {
         updateHandler.postDelayed(updateRunnable, 1000);
     }
 
-    public fun initPlayerUI(state: Int) {
+    fun initPlayerUI(state: Int) {
         setupTrackButton()
         lb.playerOverlay.root.setOnClickListener {
             hidePlayerOverlay()
@@ -224,8 +236,9 @@ class PlayerActivity : AppCompatActivity() {
 
     //TODO set spinner options
 
+    @OptIn(UnstableApi::class)
     private fun initPlayerInstance() {
-        player = ExoPlayer.Builder(this).build();
+        player = ExoPlayer.Builder(this).setRenderersFactory(DefaultRenderersFactory(this).setExtensionRendererMode(EXTENSION_RENDERER_MODE_ON)).build();
     }
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
