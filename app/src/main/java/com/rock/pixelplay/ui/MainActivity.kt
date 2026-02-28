@@ -26,7 +26,7 @@ import com.rock.pixelplay.databinding.ActivityMainBinding
 import com.rock.pixelplay.helper.BrowseUtils
 import com.rock.pixelplay.helper.HistoryHelper
 import com.rock.pixelplay.helper.onResultInterface
-import com.rock.pixelplay.recyclerview.SpaceItemDecoration
+import com.rock.pixelplay.widgets.recyclerview.SpaceItemDecoration
 import java.net.HttpURLConnection
 import java.net.URL
 

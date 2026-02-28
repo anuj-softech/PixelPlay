@@ -54,10 +54,10 @@ public class GestureManager {
                 float x = e.getX();
                 if (x < playerView.getWidth() / 2f) {
                     player.seekTo(Math.max(0, player.getCurrentPosition() - 10000));
-                    popup.showPopup(playerView,R.drawable.back10,"-10s");
+                    popup.showPopup(playerView,R.drawable.back10," 10s");
                 } else {
                     player.seekTo(player.getCurrentPosition() + 10000);
-                    popup.showPopup(playerView,R.drawable.next10,"-10s");
+                    popup.showPopup(playerView,R.drawable.next10," 10s");
                 }
                 return true;
             }

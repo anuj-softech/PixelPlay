@@ -154,8 +154,8 @@ fun PlayerActivity.applyNightOverlay(enable: Boolean) {
     if (enable) {
         if (dimView == null) {
             dimView = View(this).apply {
-                setBackgroundColor("#80000000".toColorInt()) // 50% black
-                isClickable = true // make it block touches
+                setBackgroundColor("#80000000".toColorInt())
+                isClickable = false
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
                 )

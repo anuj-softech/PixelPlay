@@ -39,9 +39,9 @@ public class Popup {
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupWindow.setOutsideTouchable(false); // allows touches to pass through
-        popupWindow.setTouchable(false);        // doesn't intercept touch
-        popupWindow.setFocusable(false);        // doesn't take focus
+        popupWindow.setOutsideTouchable(false);
+        popupWindow.setTouchable(false);
+        popupWindow.setFocusable(false);
     }
 
     private View createLoaderView(Context context) {
@@ -52,7 +52,7 @@ public class Popup {
         layout.setGravity(Gravity.CENTER_VERTICAL);
 
         popupImageView = new ImageView(context);
-        popupImageView.setLayoutParams(new LinearLayout.LayoutParams(80, 80));
+        popupImageView.setLayoutParams(new LinearLayout.LayoutParams(40, 40));
         popupImageView.setImageTintList(ColorStateList.valueOf(Color.WHITE));
         layout.addView(popupImageView);
 
@@ -69,12 +69,12 @@ public class Popup {
         popupText.setText(text);
 
         if (!isShowing) {
-            popupWindow.showAtLocation(anchor, Gravity.CENTER, 0, -100);
+            popupWindow.showAtLocation(anchor, Gravity.CENTER, 0, -50);
             isShowing = true;
         }
 
         handler.removeCallbacks(dismissRunnable);
-        handler.postDelayed(dismissRunnable, 500);
+        handler.postDelayed(dismissRunnable, 800);
     }
 
     public void stopPopup() {

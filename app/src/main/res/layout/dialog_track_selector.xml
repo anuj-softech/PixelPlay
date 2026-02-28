@@ -6,40 +6,43 @@
     android:padding="16dp">
 
     <FrameLayout
-        android:background="@drawable/round_bg"
         android:layout_width="match_parent"
-        android:padding="16dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_bg"
         android:backgroundTint="@color/primary_50"
-        android:layout_height="wrap_content">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="12dp"
-            android:text="Select Caption"
+            android:text="Select Track"
             android:textColor="@color/darkgreen"
             android:textSize="20sp"
             android:textStyle="bold" />
+
         <com.rock.pixelplay.widgets.PopButton
             android:id="@+id/closeButton"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:layout_gravity="right"
             android:layout_centerVertical="true"
+            android:layout_gravity="right"
             android:layout_marginStart="20dp"
             android:background="@color/transparent"
             android:contentDescription="@string/settings"
             android:scaleType="center"
             android:src="@drawable/cross"
             android:tint="@color/darkgreen" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="40dp"
+            android:id="@+id/captionRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never" />
+
     </FrameLayout>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/captionRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never" />
 
 </LinearLayout>
