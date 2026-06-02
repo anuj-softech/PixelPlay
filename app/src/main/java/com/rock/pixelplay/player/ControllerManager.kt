@@ -20,6 +20,11 @@ import com.rock.pixelplay.helper.AnimationUtils
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.ui.PlayerActivity
 import com.rock.pixelplay.widgets.PlayerSettings
+import com.rock.pixelplay.helper.SettingsPref
+import android.content.Intent
+import android.widget.Toast
+import com.rock.pixelplay.ai.voice.ModelsManager
+import com.rock.pixelplay.ui.AiSubtitleActivity
 
 
 public fun PlayerActivity.initProgressBar() {
@@ -114,7 +119,8 @@ public fun PlayerActivity.initOptions() {
         dialogView.getLB().main.startAnimation(slideIn)
         val currentNightMode = dimView != null
         val currentSpeed = player.playbackParameters.speed
-        val config = PlayerSettingConfig(currentNightMode, currentSpeed)
+        val currentAiSubtitle = SettingsPref.isAiSubtitleEnabled(this)
+        val config = PlayerSettingConfig(currentNightMode, currentSpeed, currentAiSubtitle)
         settupOptionsDialog(dialogView, windowManager, config)
         dialogView.setOnTouchListener { _, event ->
             if (event.action == android.view.MotionEvent.ACTION_OUTSIDE) {
@@ -136,6 +142,21 @@ private fun PlayerActivity.settupOptionsDialog(
         override fun onSettingsChanged(config: PlayerSettingConfig) {
             applyNightOverlay(config.nightMode)
             player.setPlaybackSpeed(config.playbackSpeed)
+            val wasEnabled = SettingsPref.isAiSubtitleEnabled(this@settupOptionsDialog)
+            if (config.aiSubtitles && !wasEnabled) {
+                if (!ModelsManager.isModelDownloaded(this@settupOptionsDialog)) {
+                    config.aiSubtitles = false
+                    dialogView.getLB().aiSubtitleSwitch.isChecked = false
+                    Toast.makeText(this@settupOptionsDialog, "Please download the AI Subtitle model first!", Toast.LENGTH_LONG).show()
+                    val intent = Intent(this@settupOptionsDialog, AiSubtitleActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    initAiSubtitle()
+                }
+            } else if (config.aiSubtitles && wasEnabled) {
+                initAiSubtitle()
+            }
+            SettingsPref.setAiSubtitleEnabled(this@settupOptionsDialog, config.aiSubtitles)
         }
 
         override fun onClose() {

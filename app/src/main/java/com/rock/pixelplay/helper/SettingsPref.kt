@@ -49,4 +49,11 @@ object SettingsPref {
     fun setWhisperAccuracyMode(context: Context, mode: Int) {
         prefs(context).edit().putInt("whisper_accuracy_mode", mode).apply()
     }
+
+    fun isAiSubtitleEnabled(context: Context): Boolean =
+        prefs(context).getBoolean("whisper_ai_subtitle_enabled", false)
+
+    fun setAiSubtitleEnabled(context: Context, enabled: Boolean) {
+        prefs(context).edit().putBoolean("whisper_ai_subtitle_enabled", enabled).apply()
+    }
 }
