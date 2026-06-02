@@ -8,7 +8,7 @@ import android.view.View
 class AnimationUtils {
     fun translateY(view: View, i1: Int, i2: Int) {
         val valueAnimator = ValueAnimator.ofInt(i1, i2).apply {
-            duration = 300
+            duration = 100
             addUpdateListener { v ->
                 val value = v.animatedValue as Int
                 view.translationY = value.toFloat()
@@ -28,7 +28,7 @@ class AnimationUtils {
 
     fun translateX(view: View, i1: Int, i2: Int) {
         val valueAnimator = ValueAnimator.ofInt(i1, i2).apply {
-            duration = 300
+            duration = 100
             addUpdateListener { v ->
                 val value = v.animatedValue as Int
                 view.translationX = value.toFloat()
@@ -50,7 +50,7 @@ class AnimationUtils {
 
     fun fadeOut(view: View) {
         ValueAnimator.ofFloat(1F, 0F).apply {
-            duration = 300
+            duration = 50
             addUpdateListener { v ->
                 val value = v.animatedValue as Float
                 view.alpha = value
@@ -69,7 +69,7 @@ class AnimationUtils {
         view.visibility = View.VISIBLE
 
         ValueAnimator.ofFloat(0F, 1F).apply {
-            duration = 300
+            duration = 50
             addUpdateListener { v ->
                 val value = v.animatedValue as Float
                 view.alpha = value

@@ -28,4 +28,11 @@ object SettingsPref {
     fun setSwipeEnabled(context: Context, enabled: Boolean) {
         prefs(context).edit().putBoolean(KEY_SWIPE, enabled).apply()
     }
+
+    fun getPlayerOrientation(context: Context): Int =
+        prefs(context).getInt("player_orientation", -1)
+
+    fun setPlayerOrientation(context: Context, orientation: Int) {
+        prefs(context).edit().putInt("player_orientation", orientation).apply()
+    }
 }

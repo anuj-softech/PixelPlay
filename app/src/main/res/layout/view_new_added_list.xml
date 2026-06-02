@@ -19,5 +19,5 @@
         android:id="@+id/continue_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/view_large_video" />
+        tools:listitem="@layout/view_list_video" />
 </LinearLayout>

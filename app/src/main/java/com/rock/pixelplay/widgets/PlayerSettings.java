@@ -10,18 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.rock.pixelplay.databinding.PlayerSettingsBinding;
+import com.rock.pixelplay.player.PlayerSettingConfig;
+import com.rock.pixelplay.player.PlayerSettingsListener;
 
 public class PlayerSettings extends LinearLayout {
 
     private @NonNull PlayerSettingsBinding lb;
-    private OnProgressChangeListener progressChangeListener;
-    private OnCommandListener commandListener;
+    private PlayerSettingConfig config;
+    private PlayerSettingsListener listener;
 
     public PlayerSettings(Context context) {
         super(context);
         init();
     }
-
 
     public PlayerSettings(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -38,39 +39,44 @@ public class PlayerSettings extends LinearLayout {
         init();
     }
 
-    public void setProgressChangeListener(OnProgressChangeListener listener) {
-        this.progressChangeListener = listener;
-    }
-    public void setCommandListener(OnCommandListener listener) {
-        this.commandListener = listener;
+    public void configure(PlayerSettingConfig config, PlayerSettingsListener listener) {
+        this.config = config;
+        this.listener = listener;
+        if (config != null) {
+            lb.nightModeSwitch.setChecked(config.nightMode);
+            lb.speedSlider.setValue(config.playbackSpeed);
+            lb.speedtxt.setText(String.format("%.1fx", config.playbackSpeed));
+        }
     }
 
     private void init() {
         lb = PlayerSettingsBinding.inflate(LayoutInflater.from(this.getContext()), this, true);
 
         lb.nightModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (commandListener != null) commandListener.onNightMode(isChecked);
+            if (config != null) {
+                config.nightMode = isChecked;
+                if (listener != null) {
+                    listener.onSettingsChanged(config);
+                }
+            }
         });
         lb.speedSlider.addOnChangeListener((slider, value, fromUser) -> {
-            if (progressChangeListener != null) progressChangeListener.onProgressChange(value);
+            if (config != null) {
+                config.playbackSpeed = value;
+                if (listener != null) {
+                    listener.onSettingsChanged(config);
+                }
+            }
             lb.speedtxt.setText(String.format("%.1fx", value));
         });
         lb.closeDialog.setOnClickListener(v -> {
-            if (commandListener != null) commandListener.onClose();
-            Log.e("close", "close");
+            if (listener != null) {
+                listener.onClose();
+            }
         });
-
     }
 
     public @NonNull PlayerSettingsBinding getLB() {
         return lb;
-    }
-
-    public interface OnProgressChangeListener {
-        void onProgressChange(float progress);
-    }
-    public interface OnCommandListener {
-        void onNightMode(boolean enable);
-        void onClose();
     }
 }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rock.pixelplay.R
 import com.rock.pixelplay.adapter.TrackAdapter
+import com.rock.pixelplay.adapter.TrackItem
 import com.rock.pixelplay.ui.PlayerActivity
 import com.rock.pixelplay.widgets.PopButton
 
@@ -23,34 +24,55 @@ fun PlayerActivity.showCaptionSelectorDialog(context: Context, player: ExoPlayer
     val recyclerView = dialogView.findViewById<RecyclerView>(R.id.captionRecyclerView)
     val closeButton = dialogView.findViewById<PopButton>(R.id.closeButton)
     val title = dialogView.findViewById<TextView>(R.id.title)
-    title.text = getString(R.string.select_captions);
+    title.text = getString(R.string.select_captions)
+    val density = context.resources.displayMetrics.density
+    val widthPx = (380 * density).toInt()
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     val layoutParams = WindowManager.LayoutParams(
-        WindowManager.LayoutParams.MATCH_PARENT,
+        widthPx,
         WindowManager.LayoutParams.WRAP_CONTENT,
         WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,
-        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_DIM_BEHIND,
         PixelFormat.TRANSLUCENT
     )
-    layoutParams.gravity = Gravity.BOTTOM
+    layoutParams.dimAmount = 0.5f
+    layoutParams.gravity = Gravity.CENTER
     windowManager.addView(dialogView, layoutParams)
 
-    val tracks = mutableListOf<Pair<String, TrackSelectionOverride?>>()
+    val tracks = mutableListOf<TrackItem>()
+    tracks.add(TrackItem("No Caption", "Disable captions", null))
 
-    tracks.add("No Caption" to null)
-
-    var selectedIndex: Int = 0
+    var selectedIndex = 0
 
     val trackGroups = player.currentTracks.groups
     trackGroups.forEach { group ->
         if (group.type == C.TRACK_TYPE_TEXT) {
             for (i in 0 until group.length) {
-                val trackName = group.getTrackFormat(i).language ?: "Unknown"
-                if (group.isTrackSelected(i)) {
-                    selectedIndex = i + 1 // +1 to account for "No Caption" at index 0
+                val format = group.getTrackFormat(i)
+                val langCode = format.language ?: "Unknown"
+                val displayLanguage = format.language?.let { java.util.Locale(it).displayLanguage } ?: "Unknown Language"
+                val titleText = format.label ?: displayLanguage
+                val attributes = mutableListOf<String>()
+                attributes.add("Language Code: $langCode")
+                if ((format.selectionFlags and C.SELECTION_FLAG_FORCED) != 0) {
+                    attributes.add("Forced")
                 }
-                tracks.add(trackName to TrackSelectionOverride(group.mediaTrackGroup, i))
+                if ((format.selectionFlags and C.SELECTION_FLAG_DEFAULT) != 0) {
+                    attributes.add("Default")
+                }
+                if ((format.roleFlags and C.ROLE_FLAG_DESCRIBES_MUSIC_AND_SOUND) != 0) {
+                    attributes.add("CC")
+                }
+                if (format.id != null) {
+                    attributes.add("ID: ${format.id}")
+                }
+                val subtitleText = attributes.joinToString(" | ")
+
+                if (group.isTrackSelected(i)) {
+                    selectedIndex = tracks.size
+                }
+                tracks.add(TrackItem(titleText, subtitleText, TrackSelectionOverride(group.mediaTrackGroup, i)))
             }
         }
     }
@@ -68,11 +90,9 @@ fun PlayerActivity.showCaptionSelectorDialog(context: Context, player: ExoPlayer
         windowManager.removeView(dialogView)
     }
 
-    closeButton.setOnClickListener { windowManager.removeView(dialogView) }
     closeButton.setOnClickListener {
         windowManager.removeView(dialogView)
     }
-
 }
 
 fun PlayerActivity.showAudioSelectorDialog(context: Context, player: ExoPlayer) {
@@ -82,32 +102,61 @@ fun PlayerActivity.showAudioSelectorDialog(context: Context, player: ExoPlayer) 
     val recyclerView = dialogView.findViewById<RecyclerView>(R.id.captionRecyclerView)
     val closeButton = dialogView.findViewById<PopButton>(R.id.closeButton)
     val title = dialogView.findViewById<TextView>(R.id.title)
-    title.text = getString(R.string.select_audio);
+    title.text = getString(R.string.select_audio)
+    val density = context.resources.displayMetrics.density
+    val widthPx = (380 * density).toInt()
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     val layoutParams = WindowManager.LayoutParams(
-        WindowManager.LayoutParams.MATCH_PARENT,
+        widthPx,
         WindowManager.LayoutParams.WRAP_CONTENT,
         WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,
-        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_DIM_BEHIND,
         PixelFormat.TRANSLUCENT
     )
-    layoutParams.gravity = Gravity.BOTTOM
+    layoutParams.dimAmount = 0.5f
+    layoutParams.gravity = Gravity.CENTER
     windowManager.addView(dialogView, layoutParams)
 
-    val tracks = mutableListOf<Pair<String, TrackSelectionOverride?>>()
-    tracks.add("No Audio" to null)
+    val tracks = mutableListOf<TrackItem>()
+    tracks.add(TrackItem("No Audio", "Disable audio", null))
 
     var selectedIndex = 0
     val trackGroups = player.currentTracks.groups
     trackGroups.forEach { group ->
         if (group.type == C.TRACK_TYPE_AUDIO) {
             for (i in 0 until group.length) {
-                val trackName = group.getTrackFormat(i).language ?: "Unknown"
-                if (group.isTrackSelected(i)) {
-                    selectedIndex = i + 1
+                val format = group.getTrackFormat(i)
+                val langCode = format.language ?: "Unknown"
+                val displayLanguage = format.language?.let { java.util.Locale(it).displayLanguage } ?: "Unknown Language"
+                val titleText = format.label ?: displayLanguage
+                val attributes = mutableListOf<String>()
+                if (format.bitrate > 0) {
+                    attributes.add("${format.bitrate / 1000} kbps")
                 }
-                tracks.add(trackName to TrackSelectionOverride(group.mediaTrackGroup, i))
+                if (format.channelCount > 0) {
+                    val channels = when (format.channelCount) {
+                        1 -> "Mono"
+                        2 -> "Stereo"
+                        6 -> "5.1 Surround"
+                        8 -> "7.1 Surround"
+                        else -> "${format.channelCount} Ch"
+                    }
+                    attributes.add(channels)
+                }
+                if (format.sampleRate > 0) {
+                    attributes.add("${format.sampleRate / 1000.0} kHz")
+                }
+                attributes.add("Code: $langCode")
+                if (format.id != null) {
+                    attributes.add("ID: ${format.id}")
+                }
+                val subtitleText = attributes.joinToString(" | ")
+
+                if (group.isTrackSelected(i)) {
+                    selectedIndex = tracks.size
+                }
+                tracks.add(TrackItem(titleText, subtitleText, TrackSelectionOverride(group.mediaTrackGroup, i)))
             }
         }
     }
@@ -122,13 +171,12 @@ fun PlayerActivity.showAudioSelectorDialog(context: Context, player: ExoPlayer) 
             params.addOverride(override)
         }
         player.trackSelectionParameters = params.build()
-
         windowManager.removeView(dialogView)
     }
+
     closeButton.setOnClickListener {
         windowManager.removeView(dialogView)
     }
-
 }
 
 fun PlayerActivity.setupTrackButton() {
@@ -139,4 +187,3 @@ fun PlayerActivity.setupTrackButton() {
         showAudioSelectorDialog(this, player)
     }
 }
-

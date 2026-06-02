@@ -1,6 +1,7 @@
 package com.rock.pixelplay.player
 
 import android.R.attr.duration
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -53,11 +54,13 @@ public fun PlayerActivity.initProgressBar() {
     })
     lb.playerOverlay.rotate.setOnClickListener {
         val rotation = getWindowManager().getDefaultDisplay().getRotation()
-        if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        val newOrientation = if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) {
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
+        setRequestedOrientation(newOrientation)
+        com.rock.pixelplay.helper.SettingsPref.setPlayerOrientation(this, newOrientation)
     }
 }
 
@@ -89,6 +92,7 @@ public fun PlayerActivity.resetHideTimer() {
     overlayHandler.postDelayed(hideOverlayRunnable!!, 5000)
 }
 
+@SuppressLint("ClickableViewAccessibility")
 public fun PlayerActivity.initOptions() {
     lb.playerOverlay.options.setOnClickListener {
         val dialogView = PlayerSettings(this)
@@ -96,46 +100,64 @@ public fun PlayerActivity.initOptions() {
         val layoutParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,  // Use this type for a floating view
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
             PixelFormat.TRANSLUCENT
         )
         layoutParams.gravity = Gravity.RIGHT
 
         windowManager.addView(dialogView, layoutParams)
-        val slideIn: Animation? = android.view.animation.AnimationUtils.loadAnimation(this, com.rock.pixelplay.R.anim.slide_in_right)
+        val slideIn: Animation? = android.view.animation.AnimationUtils.loadAnimation(
+            this,
+            R.anim.slide_in_right
+        )
         dialogView.getLB().main.startAnimation(slideIn)
-        dialogView.setCommandListener(object : PlayerSettings.OnCommandListener {
-            override fun onNightMode(enable: Boolean) {
-                applyNightOverlay(enable)
-            }
-
-            override fun onClose() {
+        val currentNightMode = dimView != null
+        val currentSpeed = player.playbackParameters.speed
+        val config = PlayerSettingConfig(currentNightMode, currentSpeed)
+        settupOptionsDialog(dialogView, windowManager, config)
+        dialogView.setOnTouchListener { _, event ->
+            if (event.action == android.view.MotionEvent.ACTION_OUTSIDE) {
                 closeDialog(dialogView, windowManager)
-
+                true
+            } else {
+                false
             }
-        })
-        dialogView.setProgressChangeListener(object : PlayerSettings.OnProgressChangeListener{
-            override fun onProgressChange(progress: Float) {
-                player?.setPlaybackSpeed(progress)
-            }
-        })
-
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (dialogView.isShown) {
-                    val slideOut: Animation? = android.view.animation.AnimationUtils.loadAnimation(lb.root.context, com.rock.pixelplay.R.anim.slide_out_right)
-                    dialogView.getLB().main.startAnimation(slideOut)
-                    dialogView.getLB().main.postDelayed({ windowManager.removeView(dialogView) }, 290)
-                } else {
-                    isEnabled = false
-                    onBackPressedDispatcher.onBackPressed()
-                }
-            }
-        })
+        }
     }
+}
 
+private fun PlayerActivity.settupOptionsDialog(
+    dialogView: PlayerSettings,
+    windowManager: WindowManager,
+    config: PlayerSettingConfig
+) {
+    dialogView.configure(config, object : PlayerSettingsListener {
+        override fun onSettingsChanged(config: PlayerSettingConfig) {
+            applyNightOverlay(config.nightMode)
+            player.setPlaybackSpeed(config.playbackSpeed)
+        }
 
+        override fun onClose() {
+            closeDialog(dialogView, windowManager)
+        }
+    })
+
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (dialogView.isShown) {
+                val slideOut: Animation? = android.view.animation.AnimationUtils.loadAnimation(
+                    lb.root.context,
+                    R.anim.slide_out_right
+                )
+                dialogView.getLB().main.startAnimation(slideOut)
+                dialogView.getLB().main.postDelayed({ windowManager.removeView(dialogView) }, 290)
+            } else {
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
+    })
 }
 
 private fun PlayerActivity.closeDialog(
@@ -145,7 +167,7 @@ private fun PlayerActivity.closeDialog(
     val slideOut: Animation? =
         android.view.animation.AnimationUtils.loadAnimation(lb.root.context, R.anim.slide_out_right)
     dialogView.getLB().main.startAnimation(slideOut)
-    dialogView.getLB().main.postDelayed({ windowManager.removeView(dialogView) }, 290)
+    dialogView.getLB().main.postDelayed({ windowManager.removeView(dialogView) }, 90)
 }
 
 fun PlayerActivity.applyNightOverlay(enable: Boolean) {

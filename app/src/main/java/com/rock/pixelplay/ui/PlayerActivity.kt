@@ -65,6 +65,10 @@ class PlayerActivity : AppCompatActivity() {
     lateinit var loader: Loader
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val savedOrientation = com.rock.pixelplay.helper.SettingsPref.getPlayerOrientation(this)
+        if (savedOrientation != -1) {
+            requestedOrientation = savedOrientation
+        }
         super.onCreate(savedInstanceState)
         lb = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(lb.root);
@@ -85,8 +89,30 @@ class PlayerActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        val savedOrientation = com.rock.pixelplay.helper.SettingsPref.getPlayerOrientation(this)
+        if (savedOrientation != -1 && requestedOrientation != savedOrientation) {
+            requestedOrientation = savedOrientation
+        }
+    }
+
+    private fun isContentUriAccessible(path: String?): Boolean {
+        if (path == null) return false
+        if (!path.startsWith("content://")) return true
+        return try {
+            contentResolver.openInputStream(path.toUri())?.use { }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     private fun loadFromIntent() {
-        if (intent.hasExtra("video_item")) initWithVideoItem()
+        if (intent.hasExtra("video_item")) {
+            initWithVideoItem()
+            return
+        }
 
         if (intent?.action == Intent.ACTION_VIEW && intent.data != null) {
             val rawUri = intent.data!!
@@ -107,6 +133,15 @@ class PlayerActivity : AppCompatActivity() {
                     Log.e("VideoPlayer", "Failed to persist URI permission: $e")
                 }
 
+                if (!isContentUriAccessible(rawUri.toString())) {
+                    android.widget.Toast.makeText(
+                        this,
+                        "Cannot access video. Please reopen it from the source app.",
+                        android.widget.Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                    return
+                }
             }
             val actualUri = if (rawUri.scheme == "pixelplay") {
                 rawUri.toString().replace("pixelplay://", "https://").toUri()
@@ -118,14 +153,21 @@ class PlayerActivity : AppCompatActivity() {
                 " "
             }
 
+            val historyItem =
+                HistoryHelper(this).getHistory().find { it.title == actualUri.lastPathSegment }
+            val lastPlayed = historyItem?.lastPlayed ?: "00:00:00"
+            val playedPercentage = historyItem?.playedPercentage ?: 0f
+            val lastPlayedMs = historyItem?.lastPlayedMs ?: 0L
+
             val videoItem = VideoItem(
                 title = actualUri.lastPathSegment ?: "Unknown",
                 path = actualUri.toString(),
                 dateAdded = System.currentTimeMillis(),
                 duration = VideoUtils().getVideoDuration(this, actualUri.toString()),
                 thumbnail = thumbnail,
-                lastPlayed = "00:00:00",
-                playedPercentage = 0f
+                lastPlayed = lastPlayed,
+                playedPercentage = playedPercentage,
+                lastPlayedMs = lastPlayedMs
             )
 
             videoItemG = videoItem
@@ -135,25 +177,35 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun setupFullScreen() {
-        window.decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
             window.insetsController?.apply {
-                hide(WindowInsets.Type.navigationBars())
+                hide(WindowInsets.Type.systemBars())
                 systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
+        } else {
+            window.decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN)
         }
     }
 
     private fun initWithVideoItem() {
         val moshi = Moshi.Builder().build()
-        val json = intent.getStringExtra("video_item")
+        val json = intent.getStringExtra("video_item") ?: return
         val adapter = moshi.adapter(VideoItem::class.java)
-        val videoItem = adapter.fromJson(json)
-        videoItemG = videoItem!!
+        val videoItem = adapter.fromJson(json) ?: return
+        videoItemG = videoItem
+        if (!isContentUriAccessible(videoItem.path)) {
+            android.widget.Toast.makeText(
+                this,
+                "Cannot access video. Please reopen it from the source app.",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+            finish()
+            return
+        }
         lb.playerOverlay.title.text = videoItem.title
         initPlayerFromPath(videoItem.path)
     }
@@ -233,38 +285,47 @@ class PlayerActivity : AppCompatActivity() {
 
     }
 
-
-    //TODO set spinner options
-
     @OptIn(UnstableApi::class)
     private fun initPlayerInstance() {
-        player = ExoPlayer.Builder(this).setRenderersFactory(DefaultRenderersFactory(this).setExtensionRendererMode(EXTENSION_RENDERER_MODE_ON)).build();
+        player = ExoPlayer.Builder(this).setRenderersFactory(
+            DefaultRenderersFactory(this).setExtensionRendererMode(EXTENSION_RENDERER_MODE_ON)
+        ).build();
     }
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun updateInfo() {
-        if (player.isPlaying) {
-            var position = player.currentPosition
-            var duration = player.duration
+        val playbackState = player.playbackState
+        if (playbackState != Player.STATE_IDLE && playbackState != Player.STATE_ENDED) {
+            val position = player.currentPosition
+            val duration = player.duration
+            if (duration > 0) {
+                if (!isUserSeeking) {
+                    lb.playerOverlay.duration.text = buildString {
+                        append(VideoUtils().getVideoDuration(position.toString()))
+                        append(" / ")
+                        append(VideoUtils().getVideoDuration(duration.toString()))
+                    }
+                    val maxProg = lb.playerOverlay.progressBar.max
+                    lb.playerOverlay.progressBar.progress =
+                        (position.times(maxProg).div(duration)).toInt()
 
-            if (!isUserSeeking) {
-                lb.playerOverlay.duration.text = buildString {
-                    append(VideoUtils().getVideoDuration(position.toString()))
-                    append(" / ")
-                    append(VideoUtils().getVideoDuration(duration.toString()))
+                    val endat = System.currentTimeMillis() + duration - position
+                    val date = Date(endat)
+                    val dateFormat = SimpleDateFormat("hh:mm a")
+                    val strDate = dateFormat.format(date)
+                    lb.playerOverlay.endAt.text = "End at " + strDate
                 }
                 val maxProg = lb.playerOverlay.progressBar.max
-                lb.playerOverlay.progressBar.progress =
-                    (player.currentPosition.times(maxProg).div(duration)).toInt()
-
-                val endat = System.currentTimeMillis() + player.duration - player.currentPosition;
-                var date = Date(endat)
-                var dateFormat = SimpleDateFormat("hh:mm a");
-                var strDate = dateFormat.format(date);
-                lb.playerOverlay.endAt.text = "End at " + strDate;
-
+                val bufferedProgress =
+                    (player.bufferedPosition.times(maxProg).div(duration)).toInt()
+                lb.playerOverlay.progressBar.secondaryProgress = bufferedProgress
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        player.pause()
     }
 
     override fun onStop() {
