@@ -76,6 +76,7 @@ public fun PlayerActivity.hidePlayerOverlay() {
             AnimationUtils().translateY(lb.playerOverlay.titleBar, 0, -100)
             AnimationUtils().translateY(lb.playerOverlay.progressContainer, 0, 100)
             AnimationUtils().fadeOut(lb.playerOverlay.root)
+            updateSubtitleDisplay()
         }
     }
 }
@@ -87,6 +88,7 @@ public fun PlayerActivity.showPlayerOverlay() {
             AnimationUtils().translateY(lb.playerOverlay.titleBar, -100, 0)
             AnimationUtils().translateY(lb.playerOverlay.progressContainer, 100, 0)
             AnimationUtils().fadeIn(lb.playerOverlay.root)
+            updateSubtitleDisplay()
         }
     }
     resetHideTimer()
@@ -155,6 +157,8 @@ private fun PlayerActivity.settupOptionsDialog(
                 }
             } else if (config.aiSubtitles && wasEnabled) {
                 initAiSubtitle()
+            } else if (!config.aiSubtitles && wasEnabled) {
+                stopAiSubtitle()
             }
             SettingsPref.setAiSubtitleEnabled(this@settupOptionsDialog, config.aiSubtitles)
         }

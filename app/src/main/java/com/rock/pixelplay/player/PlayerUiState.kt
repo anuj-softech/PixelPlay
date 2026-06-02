@@ -45,7 +45,11 @@ public fun PlayerActivity.manageState(state: Int) {
 
         UI_ENDED -> {
             lb.playerOverlay.playPauseToggleBtn.setImageResource(R.drawable.baseline_loop_24)
-            lb.playerOverlay.playPauseToggleBtn.setOnClickListener { player.seekTo(0);player.play() }
+            lb.playerOverlay.playPauseToggleBtn.setOnClickListener {
+                isPausedForGeneration = false
+                player.seekTo(0)
+                player.play()
+            }
         }
     }
 }

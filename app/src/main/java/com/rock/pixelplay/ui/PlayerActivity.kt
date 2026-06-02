@@ -44,6 +44,8 @@ import com.rock.pixelplay.player.initProgressBar
 import com.rock.pixelplay.player.manageState
 import com.rock.pixelplay.player.setupTrackButton
 import com.rock.pixelplay.player.showPlayerOverlay
+import com.rock.pixelplay.player.initAiSubtitle
+import com.rock.pixelplay.player.stopAiSubtitle
 import com.squareup.moshi.Moshi
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -63,6 +65,14 @@ class PlayerActivity : AppCompatActivity() {
         hidePlayerOverlay()
     }
     lateinit var loader: Loader
+    var whisperContext: com.whispercpp.java.whisper.WhisperContext? = null
+    val subtitleCache = java.util.concurrent.ConcurrentHashMap<Int, com.rock.pixelplay.player.AiSubtitleSegment>()
+    var subtitleExecutor: java.util.concurrent.ExecutorService? = null
+    val activeTasks = java.util.concurrent.ConcurrentHashMap<Int, java.util.concurrent.Future<*>>()
+    var aiSubtitleView: View? = null
+    var aiSubtitleRunnable: Runnable? = null
+    var isAiSubtitleInitializing: Boolean = false
+    var isPausedForGeneration: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val savedOrientation = com.rock.pixelplay.helper.SettingsPref.getPlayerOrientation(this)
@@ -239,6 +249,9 @@ class PlayerActivity : AppCompatActivity() {
             overlayShowing = !(lb.playerOverlay.root.isGone)
             showPlayerOverlay()
         }
+        if (com.rock.pixelplay.helper.SettingsPref.isAiSubtitleEnabled(this)) {
+            initAiSubtitle()
+        }
         player.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (isPlaying) {
@@ -273,7 +286,8 @@ class PlayerActivity : AppCompatActivity() {
         initOptions();
         lb.playerOverlay.playPauseToggleBtn.setOnClickListener {
             overlayShowing = !(lb.playerOverlay.root.isGone)
-            if (player.isPlaying) {
+            isPausedForGeneration = false
+            if (player.playWhenReady) {
                 player.pause()
             } else {
                 player.play()
@@ -348,6 +362,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        stopAiSubtitle()
         player.release();
         finish()
         super.onDestroy()
