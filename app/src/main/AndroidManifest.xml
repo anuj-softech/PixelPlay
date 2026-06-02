@@ -27,6 +27,9 @@
             android:name=".ui.SearchActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.AiSubtitleActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.SettingsActivity"
             android:exported="false" />
         <activity

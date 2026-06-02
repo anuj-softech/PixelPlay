@@ -50,7 +50,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
-    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(files("libs/whisper-java.aar"))
+    implementation("com.github.bumptech.glide:glide:5.0.7")
     ksp("com.github.bumptech.glide:compiler:4.16.0")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
 

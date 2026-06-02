@@ -71,9 +71,19 @@ class SettingsActivity : AppCompatActivity() {
                 .setNegativeButton("Cancel", null)
                 .show()
         }
+        lb.aiSubtitleSetting.setOnClickListener {
+            val intent = Intent(this, AiSubtitleActivity::class.java)
+            startActivity(intent)
+        }
         lb.aboutButton.setOnClickListener {
             val intent = Intent(this, AboutActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val path = SettingsPref.getWhisperModelPath(this)
+        lb.aiSubtitleSubtitle.text = if (path != null) "Active" else "Not Configured"
     }
 }

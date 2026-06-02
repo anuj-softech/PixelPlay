@@ -35,4 +35,18 @@ object SettingsPref {
     fun setPlayerOrientation(context: Context, orientation: Int) {
         prefs(context).edit().putInt("player_orientation", orientation).apply()
     }
+
+    fun getWhisperModelPath(context: Context): String? =
+        prefs(context).getString("whisper_model_path", null)
+
+    fun setWhisperModelPath(context: Context, path: String?) {
+        prefs(context).edit().putString("whisper_model_path", path).apply()
+    }
+
+    fun getWhisperAccuracyMode(context: Context): Int =
+        prefs(context).getInt("whisper_accuracy_mode", 1)
+
+    fun setWhisperAccuracyMode(context: Context, mode: Int) {
+        prefs(context).edit().putInt("whisper_accuracy_mode", mode).apply()
+    }
 }
