@@ -45,23 +45,30 @@ internet access without any delay.
   vs. Accuracy), allowing selection of CPU resource allocation (1, 2, or 4 threads).
 -  **Sliding-Window Sync Engine:** Automatically decodes, resamples, and processes audio in
   10-second segments with pre-fetching mechanisms, caching, and background processing.
+- **Limitations** - Currently only english audio processing is supported
 
 ## Screenshots
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b6539327-70c3-454b-84eb-2cbc1a70348e" width="220" alt="Screenshot 1"/>
+  <img src="https://github.com/user-attachments/assets/3d54bd86-2438-43af-8b30-dcda350cd6c4" width="220" alt="Screenshot 2"/>
+  <img src="https://github.com/user-attachments/assets/7be5313f-b2f8-41e0-9a85-af8f3318ee5a" width="220" alt="Screenshot 3"/>
+  <img src="https://github.com/user-attachments/assets/2c4f8e52-bdb2-40c8-81c6-36f502543605" width="220" alt="Screenshot 4"/>
+</p>
 
-<table>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/b6539327-70c3-454b-84eb-2cbc1a70348e" width="200"/></td>
-    <td><img src="https://github.com/user-attachments/assets/3d54bd86-2438-43af-8b30-dcda350cd6c4" width="200"/></td>
-    <td><img src="https://github.com/user-attachments/assets/7be5313f-b2f8-41e0-9a85-af8f3318ee5a" width="200"/></td>
-    <td><img src="https://github.com/user-attachments/assets/2c4f8e52-bdb2-40c8-81c6-36f502543605" width="200"/></td>
-  </tr>
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/4444f8b3-5dfe-4822-8242-9a8ba6428e25" width="200"/></td>
-    <td><img src="https://github.com/user-attachments/assets/d8b5d63a-27ec-4286-8633-76ec722e1fb0" width="200"/></td>
-    <td><img src="https://github.com/user-attachments/assets/b2f325eb-d8e0-4ea6-93f8-292a5990397e" width="200"/></td>
-    <td><img src="https://github.com/user-attachments/assets/e9ad2181-9618-4378-bd1c-65d07a519d6d" width="200"/></td>
-  </tr>
-</table>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4444f8b3-5dfe-4822-8242-9a8ba6428e25" width="220" alt="Screenshot 5"/>
+  <img src="https://github.com/user-attachments/assets/d8b5d63a-27ec-4286-8633-76ec722e1fb0" width="220" alt="Screenshot 6"/>
+  <img src="https://github.com/user-attachments/assets/b2f325eb-d8e0-4ea6-93f8-292a5990397e" width="220" alt="Screenshot 7"/>
+  <img src="https://github.com/user-attachments/assets/e9ad2181-9618-4378-bd1c-65d07a519d6d" width="220" alt="Screenshot 8"/>
+</p>
+
+<h2 align="center">AI Subtitle Demo</h2>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b2da3037-49cb-4a1f-a551-f049525058fe"
+       width="600"
+       alt="AI Subtitle Demo"/>
+</p>
 
 ## Installation
 
