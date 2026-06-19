@@ -2,9 +2,9 @@
 
 ![image](https://github.com/user-attachments/assets/ff10431f-0bfe-40c6-8e7b-ed202d9ca64a)
 
-PixelPlayer is a free, open-source Android video player built on Media3 ExoPlayer. It supports
+PixelPlayer is a free, open-source Android video player built on Media3 ExoPlayer and has built in offline AI subtitle generator based in wishper.cpp. It supports
 almost all video formats, is lightweight, and offers a smooth playback experience while packing in
-powerful features.
+powerful features. 
 
 ## Features
 
