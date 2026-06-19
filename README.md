@@ -1,31 +1,52 @@
 # PixelPlay
+
 ![image](https://github.com/user-attachments/assets/ff10431f-0bfe-40c6-8e7b-ed202d9ca64a)
 
-PixelPlayer is a free, open-source Android video player built on Media3 ExoPlayer. It supports almost all video formats, is lightweight, and offers a smooth playback experience while packing in powerful features.
+PixelPlayer is a free, open-source Android video player built on Media3 ExoPlayer. It supports
+almost all video formats, is lightweight, and offers a smooth playback experience while packing in
+powerful features.
 
 ## Features
-- 🎬 **Wide Format Support:** Supports MKV, MP4, 3GP, WebM, AVI, MOV, FLV, MPEG, WMV, OGG, and more.
-- ⚡ **Lightweight and Fast:** Minimal resource usage with a sleek design.
-- 🔧 **Custom Controller:** Enjoy a modern media controller with easy access to essential playback controls.
-- 📌 **Recent Videos:** Quickly access your recently played videos.
-- 🔍 **Intuitive File Browser:** Navigate through your device's storage to pick videos effortlessly.
-- 🔊 **Gesture Controls:** Swipe gestures to control volume, brightness, and seek.
-- ⏩ **Playback Speed Control:** Adjust playback speed to suit your needs. 
-- ▶️ Play directly from other apps.
+
+- **Wide Format Support:** Supports MKV, MP4, 3GP, WebM, AVI, MOV, FLV, MPEG, WMV, OGG, and more.
+- **Lightweight and Fast:** Minimal resource usage with a sleek design.
+- **Custom Controller:** Enjoy a modern media controller with easy access to essential playback
+  controls.
+- **Recent Videos:** Quickly access your recently played videos.
+- **Intuitive File Browser:** Navigate through your device's storage to pick videos effortlessly.
+- **Gesture Controls:** Swipe gestures to control volume, brightness, and seek.
+- **Playback Speed Control:** Adjust playback speed to suit your needs.
+- **Offline AI Live Subtitles:** Generate live subtitles on-the-fly, completely offline, using the
+  integrated Whisper.cpp engine.
+- **Intent Handling** Play videos directly from other apps.
 
 ## Current Progress
+
 - ✅ Video Playback
 - ✅ Custom Controller
 - ✅ Homescreen
 - ✅ Dark mode supported
 - ✅ File Browser
+- ✅ Offline AI Live Subtitles (Whisper.cpp integration)
 - ⏳ Network Streaming (In Progress)
 - ⏳ Widewine and Clearkey DRM content playback (In Progress)
 - ⏳ Multiple Advanced Features (In Progress)
 
+## AI Offline Live Subtitles (Whisper.cpp)
+
+PixelPlay integrates local, private voice transcription to generate subtitles in real-time without
+internet access without any delay.
+
+-  **100% Offline & Private:** Transcription runs locally on your device. No audio or text data is
+  sent to external servers.
+-  **Model Management:** Download, resume, or delete Whisper models directly from the settings
+  panel. Currently uses the `ggml-tiny.bin` model (~75 MB).
+-  **Adaptive Performance Tuning:** Features an interactive slider to set execution priority (Speed
+  vs. Accuracy), allowing selection of CPU resource allocation (1, 2, or 4 threads).
+-  **Sliding-Window Sync Engine:** Automatically decodes, resamples, and processes audio in
+  10-second segments with pre-fetching mechanisms, caching, and background processing.
 
 ## Screenshots
-
 
 <table>
   <tr>
@@ -42,9 +63,8 @@ PixelPlayer is a free, open-source Android video player built on Media3 ExoPlaye
   </tr>
 </table>
 
-
-
 ## Installation
+
 1. Clone the repository:
     ```bash
     git clone https://github.com/anuj-softech/PixelPlay.git
@@ -53,11 +73,15 @@ PixelPlayer is a free, open-source Android video player built on Media3 ExoPlaye
 3. Build and run the project on your Android device.
 
 ## Contributing
-Contributions are welcome! Feel free to open issues for feature requests or bug reports, and send pull requests.
+
+Contributions are welcome! Feel free to open issues for feature requests or bug reports, and send
+pull requests.
 
 ## License
+
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ---
-This is a single-person ongoing project, and your support means a lot. ⭐ Star the repo if you like it and stay tuned for exciting new features!
+This is a single-person ongoing project, and your support means a lot. ⭐ Star the repo if you like
+it and stay tuned for exciting new features!
 

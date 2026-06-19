@@ -38,7 +38,8 @@ class BrowseUtils(private val context: Context) {
             MediaStore.Video.Media.TITLE,
             MediaStore.Video.Media.DATA,
             MediaStore.Video.Media.DATE_ADDED,
-            MediaStore.Video.Media.MIME_TYPE
+            MediaStore.Video.Media.MIME_TYPE,
+            MediaStore.Video.Media.DURATION
         )
 
         val selection = "${MediaStore.Video.Media.MIME_TYPE} IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -47,7 +48,7 @@ class BrowseUtils(private val context: Context) {
             "video/webm",         // WebM
             "video/mp4",          // MP4
             "video/3gpp",         // 3GP
-            "video/avi",          // AVI (may need custom support)
+            "video/avi",          // AVI
             "video/quicktime",    // MOV
             "video/x-flv",        // FLV
             "video/mpeg",         // MPEG
@@ -62,13 +63,15 @@ class BrowseUtils(private val context: Context) {
             val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)
             val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
             val dateAddedColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
+            val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
 
             var count = 0
             while (cursor.moveToNext() && count < 15) {
                 val title = cursor.getString(titleColumn)
                 val path = cursor.getString(pathColumn)
                 val dateAdded = cursor.getLong(dateAddedColumn)
-                val duration = videoUtils.getVideoDuration(context, path)
+                val durationMs = cursor.getLong(durationColumn)
+                val duration = videoUtils.getVideoDuration(durationMs.toString())
                 val thumbnail = path
                 videos.add(
                     VideoItem(

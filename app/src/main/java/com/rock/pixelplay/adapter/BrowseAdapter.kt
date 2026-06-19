@@ -65,21 +65,37 @@ class BrowseAdapter(
     inner class VideoViewHolder(private val b: ViewListVideoBinding) : RecyclerView.ViewHolder(b.root) {
         fun bind(file: File) {
             b.title.text = file.name
-            b.metadata.text = "${formatDuration(file)} ${file.length() / 1024 / 1024} Mb"
             b.root.setOnClickListener { onItemClick(file) }
-            b.thumbnail.setImageResource(R.drawable.placeholder)
 
-            // Offload thumbnail loading to background thread
             val uri = file.path.toUri().toString()
+            b.thumbnail.setImageResource(R.drawable.placeholder)
+            b.thumbnail.tag = uri
+            b.metadata.text = "Loading..."
+
+            // Offload thumbnail and metadata loading to background threads
             val cached = DiskBitmapCache.get(uri)
             if (cached != null) {
-                b.thumbnail.setImageBitmap(cached)
+                if (b.thumbnail.tag == uri) {
+                    b.thumbnail.setImageBitmap(cached)
+                }
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
                     val thumb = VideoUtils().getVideoThumbnail(uri)
                     DiskBitmapCache.put(uri, thumb)
                     withContext(Dispatchers.Main) {
-                        b.thumbnail.setImageBitmap(thumb)
+                        if (b.thumbnail.tag == uri) {
+                            b.thumbnail.setImageBitmap(thumb)
+                        }
+                    }
+                }
+            }
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val duration = formatDuration(file)
+                val sizeMb = file.length() / 1024 / 1024
+                withContext(Dispatchers.Main) {
+                    if (b.thumbnail.tag == uri) {
+                        b.metadata.text = "$duration $sizeMb Mb"
                     }
                 }
             }

@@ -45,15 +45,12 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        checkPermissionsAndLoadVideos()
-        setupNewAdded()
         setupButtons()
-        countAllVideos();
-        setupExternalStorage()
         val spaceInPx = resources.getDimensionPixelSize(R.dimen.recycler_item_spacing)
         lb.recents.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
         lb.addedList.continueRv.addItemDecoration(SpaceItemDecoration(spaceInPx))
         logNewAppCount()
+        checkPermissionsAndLoadVideos()
     }
 
     private fun countAllVideos() {
@@ -123,44 +120,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissionsAndLoadVideos() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.READ_MEDIA_VIDEO
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    setupNewAdded()
-                }
-
-                else -> {
-                    requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_VIDEO)
-                }
-            }
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_VIDEO
         } else {
-            when {
-                ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.READ_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    setupNewAdded()
-                }
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
 
-                else -> {
-                    requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                }
-            }
+        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
+            loadContent()
+        } else {
+            requestPermissionLauncher.launch(permission)
         }
     }
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                setupNewAdded()
-                setupButtons()
-                countAllVideos();
-                setupExternalStorage()
+                loadContent()
             } else {
                 Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show()
             }
         }
+
+    private fun loadContent() {
+        setupNewAdded()
+        countAllVideos()
+        setupExternalStorage()
+    }
 
     private fun setupNewAdded() {
         setupHistory()
