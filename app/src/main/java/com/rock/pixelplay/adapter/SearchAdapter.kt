@@ -7,6 +7,7 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.rock.pixelplay.R
 import com.rock.pixelplay.databinding.ViewListVideoBinding
+import com.rock.pixelplay.helper.DiskBitmapCache
 import com.rock.pixelplay.helper.VideoUtils
 import com.rock.pixelplay.model.VideoItem
 import kotlinx.coroutines.CoroutineScope
@@ -34,16 +35,30 @@ class SearchAdapter(
         holder.binding.title.text = videoItem.title
         holder.binding.metadata.text = videoItem.duration
 
+        val imageView = holder.binding.thumbnail
+        val uri = videoItem.thumbnail.toUri().toString()
+
         // Show placeholder while loading
-        holder.binding.thumbnail.setImageResource(R.drawable.placeholder)
+        imageView.setImageResource(R.drawable.placeholder)
+        imageView.tag = uri
 
-        // Offload thumbnail loading to background thread
-        CoroutineScope(Dispatchers.IO).launch {
-            val thumbnail = videoUtils.getVideoThumbnail(videoItem.thumbnail.toUri().toString())
+        val cached = DiskBitmapCache.get(uri)
+        if (cached != null) {
+            if (imageView.tag == uri) {
+                imageView.setImageBitmap(cached)
+            }
+        } else {
+            // Offload thumbnail loading to background thread
+            CoroutineScope(Dispatchers.IO).launch {
+                val thumbnail = videoUtils.getVideoThumbnail(uri)
+                DiskBitmapCache.put(uri, thumbnail)
 
-            // Update the UI on the main thread
-            withContext(Dispatchers.Main) {
-                holder.binding.thumbnail.setImageBitmap(thumbnail)
+                // Update the UI on the main thread
+                withContext(Dispatchers.Main) {
+                    if (imageView.tag == uri) {
+                        imageView.setImageBitmap(thumbnail)
+                    }
+                }
             }
         }
 

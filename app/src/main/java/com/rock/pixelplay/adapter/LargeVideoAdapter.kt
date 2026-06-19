@@ -39,16 +39,25 @@ class LargeVideoAdapter(
         holder.binding.title.text = videoItem.title
         holder.binding.duration.text = "${videoItem.lastPlayed} / ${videoItem.duration}"
 
+        val imageView = holder.binding.thumbnail
         val uri = videoItem.thumbnail.toUri().toString()
+
+        imageView.setImageResource(com.rock.pixelplay.R.drawable.placeholder)
+        imageView.tag = uri
+
         val cached = DiskBitmapCache.get(uri)
         if (cached != null) {
-            holder.binding.thumbnail.setImageBitmap(cached)
+            if (imageView.tag == uri) {
+                imageView.setImageBitmap(cached)
+            }
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 val thumb = videoUtils.getVideoThumbnail(uri)
                 DiskBitmapCache.put(uri, thumb)
                 withContext(Dispatchers.Main) {
-                    holder.binding.thumbnail.setImageBitmap(thumb)
+                    if (imageView.tag == uri) {
+                        imageView.setImageBitmap(thumb)
+                    }
                 }
             }
         }

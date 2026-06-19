@@ -2,7 +2,6 @@ package com.rock.pixelplay.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
@@ -44,6 +43,7 @@ public class PlayerSettings extends LinearLayout {
         this.listener = listener;
         if (config != null) {
             lb.nightModeSwitch.setChecked(config.nightMode);
+            lb.aiSubtitleSwitch.setChecked(config.aiSubtitles);
             lb.speedSlider.setValue(config.playbackSpeed);
             lb.speedtxt.setText(String.format("%.1fx", config.playbackSpeed));
         }
@@ -55,6 +55,14 @@ public class PlayerSettings extends LinearLayout {
         lb.nightModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (config != null) {
                 config.nightMode = isChecked;
+                if (listener != null) {
+                    listener.onSettingsChanged(config);
+                }
+            }
+        });
+        lb.aiSubtitleSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (config != null) {
+                config.aiSubtitles = isChecked;
                 if (listener != null) {
                     listener.onSettingsChanged(config);
                 }

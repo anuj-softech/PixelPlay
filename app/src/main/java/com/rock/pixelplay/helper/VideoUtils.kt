@@ -86,7 +86,8 @@ class VideoUtils {
         val projection = arrayOf(
             MediaStore.Video.Media.TITLE,
             MediaStore.Video.Media.DATA,
-            MediaStore.Video.Media.DATE_ADDED
+            MediaStore.Video.Media.DATE_ADDED,
+            MediaStore.Video.Media.DURATION
         )
         val selection = "${MediaStore.Video.Media.TITLE} LIKE ?"
         val selectionArgs = arrayOf("%$query%")
@@ -99,13 +100,15 @@ class VideoUtils {
                 val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
                 val dateAddedColumn =
                     cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
+                val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
 
                 var count = 0
                 while (cursor.moveToNext() && count < 5) {
                     val title = cursor.getString(titleColumn)
                     val path = cursor.getString(pathColumn)
                     val dateAdded = cursor.getLong(dateAddedColumn)
-                    val duration = getVideoDuration(context, path) // your util method
+                    val durationMs = cursor.getLong(durationColumn)
+                    val duration = getVideoDuration(durationMs.toString())
                     val thumbnail = path
 
                     videos.add(
